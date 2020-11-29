@@ -6,7 +6,7 @@ import Doctor from './components/doctors/doctor';
 function App() {
   return (
     <div className="App">
-      <Doctor />
+      <Register />
     </div>
   );
 }

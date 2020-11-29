@@ -1,6 +1,6 @@
 import React from 'react'
 import { RegisterBackground, LogoWrapper, LogoM, RegisterContainer, RegisterPhoto, RegisterForm } from './register.elements';
-import { Form } from './form';
+import Form from './form';
 
 const Register = () => {
     return (
