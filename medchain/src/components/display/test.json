@@ -1,0 +1,21 @@
+{
+    "names":[
+        "Randy",
+        "Dobby",
+        "Richard"
+    ],
+    "Stores":[
+        "mcdonalds",
+        "wendy's",
+        "burger king"
+    ],
+    "test":["somethiubg"],
+    "chain":[
+        {
+            "index": 1,
+            "note": "Genesis Block -- New Record created.",
+            "previous_hash": 1,
+            "timestamp": "2020-11-29 15:59:59"
+        }
+    ]
+}
