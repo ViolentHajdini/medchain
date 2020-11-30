@@ -4,6 +4,11 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+flask = "*"
+requests = "*"
+cryptography = ">=3.1.0"
+dnspython = "*"
+pymongo = "*"
 
 [dev-packages]
 

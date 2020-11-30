@@ -1,0 +1,25 @@
+{
+  "name": "medchain",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "concurrently \"npm start --prefix medchain\" \"cd backend && python3 app.py\"",
+    "setup-client": "cd medchain && npm install",
+    "setup-backend": "cd backend && python3 -m virtualenv env && python3 -m pipenv install",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ViolentHajdini/medchain.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ViolentHajdini/medchain/issues"
+  },
+  "homepage": "https://github.com/ViolentHajdini/medchain#readme",
+  "dependencies": {
+    "concurrently": "^5.3.0"
+  }
+}
