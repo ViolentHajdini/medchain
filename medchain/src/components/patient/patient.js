@@ -1,5 +1,6 @@
 import React from 'react'
-import { PatientBackground, Logo, LogoWrp, BackgroundWrapper, PatientInfo, InfoWrapper, Photo, BlockchainWrapper, Blockchain } from './patient.elements'
+import { PatientBackground, Logo, LogoWrp, BackgroundWrapper, PatientInfo, InfoWrapper, Photo, BlockchainWrapper } from './patient.elements'
+import Blockchain from './blockchaincard'
 
 const Patient = () => {
     return (
@@ -21,8 +22,7 @@ const Patient = () => {
                 </Photo>
             </PatientInfo>
             <BlockchainWrapper>
-                <Blockchain>
-                </Blockchain>
+                <Blockchain/>
             </BlockchainWrapper>
         </BackgroundWrapper>
         </PatientBackground>
