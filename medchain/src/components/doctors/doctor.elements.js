@@ -51,7 +51,7 @@ export const Paragraph = styled.p`
     font-family: 'Montserrat', sans-serif;
     font-weight: 500;
     font-size: 11px;
-    display:flex
+    display:flex;
     align-items:flex-start;
 `
 
@@ -59,5 +59,6 @@ export const Header = styled.p`
     font-family: 'Montserrat', sans-serif;
     font-weight: 500;
     font-size: 15px;
-
+    margin-left: 5px;
+    margin-right: 5px;
 `
