@@ -39,7 +39,6 @@ const Doctor = () => {
               });
         setClicked(true);
         setKey('');
-        console.log('here');
 
         e.preventDefault();
        
@@ -59,7 +58,7 @@ const Doctor = () => {
                 <FormWrapper>
                     <MedicalForm />
                 </FormWrapper>
-                <div style={(clicked ) ? {backgroundColor:"#EFEFE8FF",position:"fixed",right:"0%",top:"0%",width:"45vw", height:"100vh", display:"flex", alignItems:"center",flexDirection:"column", overflow:"scroll"} : {display:"none"}}>
+                <div style={(clicked && blockchain !== 0 ) ? {backgroundColor:"#EFEFE8FF",position:"fixed",right:"0%",top:"0%",width:"45vw", height:"100vh", display:"flex", alignItems:"center",flexDirection:"column", overflow:"scroll"} : {display:"none"}}>
                     <div style={{position:"fixed",right:"0%",fontSize:"2.5rem",cursor:"pointer"}} onClick={closeModal} >X</div>
                     {blockchain.map(function(data,index) {
                     return( 
