@@ -10,7 +10,7 @@ const Doctor = () => {
 
     const [hover, setHover] = useState(false);
     const [key, setKey] = useState('');
-    const [blockchain,setBlockchain] = useState('');
+    const [blockchain,setBlockchain] = useState([]);
     const [clicked, setClicked] = useState(false);
     const data1 = '/cadd75339625c5401af9b5cce0b0d402f56c44891001a885ca93f8f24b48079f'
     const onHover = () => {
@@ -21,7 +21,7 @@ const Doctor = () => {
         console.log(key);
 
 
-        fetch('/search/patient/' + key, {
+        fetch('/record/chain/' + key, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -29,7 +29,7 @@ const Doctor = () => {
             })
             .then(response => response.json())
             .then(data => {
-                setBlockchain(data.name);
+                setBlockchain(data);
                 console.log('Success:', data);
                
             })
@@ -49,6 +49,18 @@ const Doctor = () => {
     const closeModal = () =>{
         setClicked(false);
     }
+
+    const mapdata = () => {blockchain.chain.map(function(data,index) {
+        return( 
+            <div style={{border:"2px dotted purple",width:"max-content"}} key={index}> 
+                <h1>name </h1>
+                <p> illness:
+                    <br/> gender:
+                    <br/> sex:
+                
+                </p>
+            </div>
+        )});}
    
     return (
         <DoctorBackground>
@@ -57,20 +69,11 @@ const Doctor = () => {
                 </FormWrapper>
                 <div style={clicked ? {border:"2px solid red",position:"fixed",right:"0%",top:"0%",width:"45vw", height:"100vh", display:"flex", alignItems:"center",flexDirection:"column", overflow:"scroll"} : {visibility:"hidden"}}>
                     <div style={{position:"absolute", right:"5%",top:'0%',fontSize:"6rem",cursor:"pointer"}} onClick={closeModal} >X</div>
-                    {testjson.chain.map(function(data,index) {
-                    return( 
-                        <div style={{border:"2px dotted purple",width:"max-content"}} key={index}> 
-                            <h1>{data.name} </h1>
-                            <p> illness:{data.illness} 
-                                <br/> gender:{data.gender} 
-                                <br/> sex:{data.sex} 
-                            </p>
-                        </div>
-                    )})}
+                    {mapdata()}
                 </div>
             
                 <BlockchainWrapper onSubmit={handleSubmit} >
-                    <Input value={key} onChange={handleChange}/>
+                    <Input placeholder="ID" value={key} onChange={handleChange}/>
                     <InputButton type='submit' value="Find Patients Blockchain" />  
                 </BlockchainWrapper>
         </DoctorBackground>

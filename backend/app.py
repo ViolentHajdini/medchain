@@ -9,7 +9,7 @@ app     = Flask(__name__)
 archive = Archive()
 node    = Node()
 
-chain = Chain(id='123')
+chain = Chain(id='cadd75339625c5401af9b5cce0b0d402f56c44891001a885ca93f8f24b48079f')
 archive.add_record(chain)
 
 DB_KEY = "mongodb+srv://dave:dave@cluster0.sj9u0.mongodb.net/user?retryWrites=true&w=majority"

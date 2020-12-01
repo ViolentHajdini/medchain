@@ -9,11 +9,8 @@ import Displayjson from './components/display/displayjson';
 function App() {
   return (
     <div className="App">
-<<<<<<< HEAD
-      <Doctor />
-=======
-      <Patient/>
->>>>>>> 3be2820be1632bb491ad3a89731ab5688ebc06c3
+    
+      <Doctor/>
     </div>
   );
 }
