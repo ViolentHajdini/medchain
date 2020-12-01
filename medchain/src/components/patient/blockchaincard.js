@@ -1,11 +1,15 @@
 import React from 'react'
+import { Container, Card } from './blockchaincard.elements';  
 
 const Blockchain = () => {
     return (
-        <div>
-            
-        </div>
+        <Container>
+            <Card>
+            </Card>
+        </Container>
     )
 }
+
+// Container, Card, Hospital, Diagnosis, Perscription, Comment, PreviousHash, TimeStamp, Index
 
 export default Blockchain

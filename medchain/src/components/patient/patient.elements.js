@@ -31,9 +31,13 @@ export const Logo = styled.svg`
 `
 
 export const BlockchainWrapper = styled.div`
-    background: red;
-    height: 300px;
+    background: white;
+    height: 600px;
     width: 50vw;
+    overflow-y: scroll;
+    display:flex;
+    flex-direction: column;
+    align-items: center; 
 `
 
 export const LogoWrp = styled.div`
@@ -48,12 +52,6 @@ export const LogoWrp = styled.div`
     color: black;
 `
 
-export const Blockchain = styled.div`
-    width: 100px; 
-    height: 100px;
-    color: yellow;
-`
-
 export const PatientInfo = styled.div`
     background: white;
 `
@@ -63,25 +61,27 @@ export const InfoWrapper = styled.div`
     width: 480px;
     height: 280px;
     color: black;
-    font-size: .7rem;
+    font-size: 7px;
     text-align: left;
     padding-left: 15px;
     padding-top: 10px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+}
 
 `
 
-export const Photo = styled.img`
+export const Photo = styled.div`
     background-image: url(${photo});
     display:flex;
     position: relative;
     background-repeat:no-repeat;
-    width: 480px;
-    height: 280px;
+    width: 500px;
+    height: 300px;
     border: none;
     background-size: contain;
     background-position: center center;
-    border: 0;
     text-decoration: none;
-    outline: 0;
-    border: hidden;
+    margin-left: 8px;
+
 `
