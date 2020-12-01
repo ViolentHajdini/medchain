@@ -46,3 +46,11 @@ export const InputButton = styled.input`
         outline-width: 0;
     }
 `
+
+export const Paragraph = styled.p`
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 11px;
+    display:flex
+    align-items:flex-start;
+`

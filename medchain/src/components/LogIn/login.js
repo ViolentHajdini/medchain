@@ -1,96 +1,63 @@
 import React, {useState} from 'react'
-import { Container, HeaderbtnWrapper, Header, Logo, LogoContainer, ArrowForward, ArrowRight, VideoBg, Background, Content } from './login.elements';
+import { Container, HeaderbtnWrapper, Logo, LogoContainer, VideoBg, Background, Content } from './login.elements';
 import sample from '../../video/video.mp4';
-import SearchPage from '../Searchbar/searchbar.js';
 import { Button } from './ButtonElement'
-import { withStyles } from '@material-ui/core/styles';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-import Form from '../register/form'
+import { FormWrapper, Select } from '../register/form.elements'
+import { Searchwrapper, Input } from '../Searchbar/searchbar.elements'
+import { Redirect } from "react-router-dom";
+const axios = require('axios');
 
 
-const GreenCheckbox = withStyles({
-    root: {
-      color: "#01bf71",
-      '&$checked': {
-        color:"#01bf71",
-      },
-    },
-    checked: {},
-  })((props) => <Checkbox color="default" {...props} />);
-
-
-function Login () {
+export const Login = () => {
     const [hover, setHover] = useState(false)
-
+    const [key, setKey] = useState("");
+    const [opt, setOpt] = useState("doctor");
+    const [auth, setAuth] = useState(false);
     const onHover = () => {
         setHover(!hover)
     }
 
-
-    const [state, setState] = React.useState({
-            patient: true,
-            doctor: true,
-    });
-      
-    const handleChange = (event) => {
-        setState({ ...state, [event.target.name]: event.target.checked });
-    };
-
-
+    const handleSubmit = e => {
+        e.preventDefault();
+        axios.get(`/search/${opt}/${key}`).then(res => {
+            if (res.data.error) { alert(res.data.error); }
+            else { setAuth(true); }
+        });
+    }
 
     return (
-        
-        
         <Container>
+            { auth === true ? opt === "doctor" ? <Redirect to="/doctor" /> : <Redirect to="/patient/"/> : null}
             <Background>
                 <VideoBg autoPlay loop muted src={sample} type='video/mp4' />
             </Background>
-            <Content>
+            <Content onSubmit={handleSubmit}>
                 <LogoContainer>
                     <Logo/> MedChain
                 </LogoContainer>
                 <Searchwrapper>
-                    <form>
-                        <Input type='text' placeholder='Please enter your key...'>
-                        </Input>
-                    </form>
+                        <Input type='text' 
+                               placeholder='Please enter your key...'   
+                               value={key} 
+                               onChange={ e => setKey(e.target.value)}
+                        />
                 </Searchwrapper>
-                {/* <FormGroup row>
-                <FormControlLabel
-                    control={<GreenCheckbox checked={state.doctor} onChange={handleChange} name="doctor" />}
-                    label="Doctor"
-                    style ={{
-                        color: "white",
-                      }}
-                      />
-                      
-                <FormControlLabel
-                    control={<GreenCheckbox checked={state.patient} onChange={handleChange} name="patient" />}
-                    label="Patient"
-                    style ={{
-                        color: "white",
-                      }}
-                    />
-                </FormGroup> */}
-
-                <Form/>
+                <div>
+                    <FormWrapper onSubmit={handleSubmit}>
+                        <Select value={opt} onChange={e => setOpt(e.target.value)}>
+                            <option value="doctor"> Doctor </option>
+                            <option value="patient"> Patient </option>
+                        </Select>
+                    </FormWrapper>
+                </div>
                 <HeaderbtnWrapper>
-                <Button to ='cotact' 
-                    onMouseEnter={onHover} 
-                    onMouseLeave={onHover}
-                >Find Blockchain {hover ? <ArrowForward /> : <ArrowRight />} 
-                </Button>
-                
-            </HeaderbtnWrapper>
+
+                    <Button  type='submit' value="Find Blockchain"
+                        onMouseEnter={onHover} 
+                        onMouseLeave={onHover}
+                    />
+                </HeaderbtnWrapper>
             </Content>
         </Container>
     )
-}
-
-export default Login
-
-{/* <video className='videoTag' autoPlay loop muted>
-    <source src={sample} type='video/mp4' />
-</video> */}
+};

@@ -45,7 +45,7 @@ export const VideoBg = styled.video`
     background: white;
 `
 
-export const Content = styled.div`
+export const Content = styled.form`
     z-index: 3;
     position: absolute;
     display: flex;

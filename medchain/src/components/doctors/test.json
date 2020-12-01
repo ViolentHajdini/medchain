@@ -1,28 +1,5 @@
 {
     "chain":[
-        {
-            "name":"mr.dan",
-            "illness":"madcow disease",
-            "gender":"male",
-            "sex":"all the time"
-        },
-        {
-            "name":"ms.dude",
-            "illness":"hysteria",
-            "gender":"female",
-            "sex":"monster virgin"
-        },
-        {
-            "name":"asda",
-            "illness":"hysteria",
-            "gender":"female",
-            "sex":"monster virgin"
-        },
-        {
-            "name":"kda",
-            "illness":"hysteria",
-            "gender":"female",
-            "sex":"monster virgin"
-        }
+        
     ]
 }

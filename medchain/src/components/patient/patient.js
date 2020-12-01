@@ -1,8 +1,8 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { PatientBackground, Logo, LogoWrp, BackgroundWrapper, PatientInfo, InfoWrapper, Photo, BlockchainWrapper } from './patient.elements'
 import Blockchain from './blockchaincard'
 
-const Patient = () => {
+const Patient = () => {    
     return (
         <PatientBackground>
             <LogoWrp>
