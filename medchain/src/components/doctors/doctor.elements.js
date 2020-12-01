@@ -54,3 +54,10 @@ export const Paragraph = styled.p`
     display:flex
     align-items:flex-start;
 `
+
+export const Header = styled.p`
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 500;
+    font-size: 15px;
+
+`

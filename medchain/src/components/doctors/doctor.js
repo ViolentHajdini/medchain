@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowForward, ArrowRight } from '../LogIn/login.elements';
-import { DoctorBackground, FormWrapper, BlockchainWrapper, Paragraph } from './doctor.elements';
+import { DoctorBackground, FormWrapper, BlockchainWrapper, Paragraph, Header } from './doctor.elements';
 import  MedicalForm  from './medicalform';
 import FindPatient  from './find';
 import { Input, InputButton } from './find.elements'
@@ -60,21 +60,18 @@ const Doctor = () => {
                     <MedicalForm />
                 </FormWrapper>
                 <div style={(clicked ) ? {backgroundColor:"#EFEFE8FF",position:"fixed",right:"0%",top:"0%",width:"45vw", height:"100vh", display:"flex", alignItems:"center",flexDirection:"column", overflow:"scroll"} : {display:"none"}}>
-                    <div style={{position:"fixed",right:"0%",fontSize:"2.5rem",cursor:"pointer"}} onClick={closeModal} >X</div>
+                    <div style={{position:"fixed",right:"0",fontWeight:"bold",marginRight:"20px",marginTop:"40px;",fontSize:"1.8rem",cursor:"pointer", color:"#01bf71"}} onClick={closeModal} >X</div>
                     {blockchain.map(function(data,index) {
                     return( 
                         <div style={{border:"2px dotted purple",width:"max-content"}} key={index}> 
-                            <h1>index:{data.index}  </h1>
-                            <Paragraph>
-                                
+                            <Header>index:{data.index}  </Header>
+                            <Paragraph> 
                                 timestamp: {data.timestamp}
                                 <br/> hospital: {data.hospital}
                                 <br/> diagnosis: {data.diagnosis}
                                 <br/> perscription: {data.perscription}
                                 <br/> comment: {data.comment}
-                                <br/> previous: {data.previous_hash}
-                                
-                                
+                                <br/> previous: {data.previous_hash}     
                             </Paragraph>
 
                         </div>
