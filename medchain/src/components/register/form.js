@@ -8,7 +8,13 @@ const Form = () => {
     
     const handleSubmit = e => {
         e.preventDefault();
-        axios.get(`/search/${opt}/${key}`).then(res => console.log(res.data));
+        axios.get(`/search/${opt}/${key}`).then(res => {
+            if (res.data.error) {
+                alert(res.data.error)
+            } else {
+                return;
+            }
+        });
     }
     
     return (

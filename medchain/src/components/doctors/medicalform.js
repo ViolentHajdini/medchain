@@ -22,6 +22,11 @@ const MedicalForm = () => {
             }
         })
         .then(res => console.log(res));
+        setId('');
+        setHospital('');
+        setDiagnosis('');
+        setPerscription('');
+        setComment('');
     }
 
     return (
