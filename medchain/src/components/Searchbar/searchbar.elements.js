@@ -14,6 +14,6 @@ export const Input = styled.input`
 `
 
 export const Searchwrapper = styled.div`
-    margin-bottom: 10px;
+    margin-bottom: 40px;
 
 `

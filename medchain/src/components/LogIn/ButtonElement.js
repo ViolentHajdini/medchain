@@ -18,6 +18,7 @@ export const Button = styled(Link)`
     transition: all 0.2s ease-in-out;
     border: .15rem solid #28df99;
     padding-right: 15px;
+    margin-top: 13px;
 
     &:hover{
         transition: all 0.2s ease-in-out;

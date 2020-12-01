@@ -3,6 +3,22 @@ import { Container, HeaderbtnWrapper, Header, Logo, LogoContainer, ArrowForward,
 import sample from '../../video/video.mp4';
 import SearchPage from '../Searchbar/searchbar.js';
 import { Button } from './ButtonElement'
+import { withStyles } from '@material-ui/core/styles';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Checkbox from '@material-ui/core/Checkbox';
+
+
+const GreenCheckbox = withStyles({
+    root: {
+      color: "#01bf71",
+      '&$checked': {
+        color:"#01bf71",
+      },
+    },
+    checked: {},
+  })((props) => <Checkbox color="default" {...props} />);
+
 
 function Login () {
     const [hover, setHover] = useState(false)
@@ -11,11 +27,17 @@ function Login () {
         setHover(!hover)
     }
 
-    const [hover2, setHover2] = useState(false)
 
-    const onHover2 = () => {
-        setHover2(!hover2)
-    }
+    const [state, setState] = React.useState({
+            patient: true,
+            doctor: true,
+    });
+      
+    const handleChange = (event) => {
+        setState({ ...state, [event.target.name]: event.target.checked });
+    };
+
+
 
     return (
         
@@ -29,21 +51,31 @@ function Login () {
                     <Logo/> MedChain
                 </LogoContainer>
                 <SearchPage />
+                <FormGroup row>
+                <FormControlLabel
+                    control={<GreenCheckbox checked={state.doctor} onChange={handleChange} name="doctor" />}
+                    label="Doctor"
+                    style ={{
+                        color: "white",
+                      }}
+                      />
+                      
+                <FormControlLabel
+                    control={<GreenCheckbox checked={state.patient} onChange={handleChange} name="patient" />}
+                    label="Patient"
+                    style ={{
+                        color: "white",
+                      }}
+                    />
+                </FormGroup>
+                
                 <HeaderbtnWrapper>
                 <Button to ='cotact' 
                     onMouseEnter={onHover} 
                     onMouseLeave={onHover}
                 >Find Blockchain {hover ? <ArrowForward /> : <ArrowRight />} 
                 </Button>
-            </HeaderbtnWrapper>
-            <Header>If you do not have one, create one here</Header>
-            <HeaderbtnWrapper style={{paddingRight: "50px", paddingLeft: "50px" }}>
-                <Button to ='cotact' 
-                    onMouseEnter={onHover2} 
-                    onMouseLeave={onHover2}
-                    style={{paddingRight: "30px", paddingLeft: "39px" }}
-                >Create New One {hover2 ? <ArrowForward /> : <ArrowRight />} 
-                </Button>
+                
             </HeaderbtnWrapper>
             </Content>
         </Container>
