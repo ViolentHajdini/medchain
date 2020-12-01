@@ -42,7 +42,7 @@ class Displayjson extends Component{
     }
 
     getjson(){
-        fetch('http://localhost:4242/record/chain', {method: "GET",
+        fetch('/record/chain', {method: "GET",
         headers: {
           "Content-Type": "application/json"
         },

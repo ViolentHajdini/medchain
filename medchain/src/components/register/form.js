@@ -8,9 +8,7 @@ const Form = () => {
     
     const handleSubmit = e => {
         e.preventDefault();
-        axios
-        .get(`/search/${opt}/${key}`)
-        .then(res => console.log(res.data));
+        axios.get(`/search/${opt}/${key}`).then(res => console.log(res.data));
     }
     
     return (

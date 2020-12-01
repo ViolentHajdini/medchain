@@ -6,7 +6,7 @@ import Displayjson from './components/display/displayjson';
 function App() {
   return (
     <div className="App">
-      <Login />
+      <Doctor />
     </div>
   );
 }

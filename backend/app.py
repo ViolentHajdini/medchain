@@ -9,6 +9,9 @@ app     = Flask(__name__)
 archive = Archive()
 node    = Node()
 
+chain = Chain(id='123')
+archive.add_record(chain)
+
 DB_KEY = "mongodb+srv://dave:dave@cluster0.sj9u0.mongodb.net/user?retryWrites=true&w=majority"
 client = pymongo.MongoClient(DB_KEY)
 db = client.user
@@ -23,7 +26,7 @@ def deal_with_input(opt, key):
         res = doctors.find_one({'address': key})
 
     if not res:
-        return jsonify({'error': 'Could not find what you were looking for.'}), 404
+        return jsonify({'error': 'This address does not exist.'}), 404
 
     return jsonify({
         'name': res['name'],
@@ -34,15 +37,12 @@ def deal_with_input(opt, key):
 @app.route('/record/new', methods=['POST'])
 def record():
     values = request.get_json()
-    patient = values['patient']
-    record = Chain(id=patient, data={
-        'note': "Genesis Block -- New Record created.",
-    })
+    id = values['id']
+    data = values['data']
+    record = archive.fetch_record(id)
+    
+    return jsonify(record.new_block(record.hash(record.last_block), data=data)), 200
 
-    if archive.add_record(record):
-        return jsonify(record.last_block), 200
-    else:
-        return {'error': 'This book must already exist.'}, 400
 
 
 @app.route('/record/chain/<id>', methods=['GET'])

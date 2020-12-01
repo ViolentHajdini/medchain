@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const DoctorBackground = styled.div`
-    background: #24C889;
+    background: #EFEFE8FF;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -15,22 +15,21 @@ export const DoctorBackground = styled.div`
 export const FormWrapper = styled.div`
     width: 55vw;
     height: 100%;
-    background: red;
+    background: #EFEFE8FF;
 `
 
-export const BlockchainWrapper = styled.div`
+export const BlockchainWrapper = styled.form`
     width: 45vw;
     height: auto;
     //overflow-y: scroll;
-    background :white;
+    background :#EFEFE8FF;
+  
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     
 `
 
-export const Input = styled.input`
-    width: 500px;
-    height: 50px;
-    background: green;
-`
 export const InputButton = styled.input`
   width: 300px;
   background-color: #01bf71;

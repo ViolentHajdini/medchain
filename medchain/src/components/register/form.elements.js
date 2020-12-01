@@ -39,10 +39,10 @@ export const Inputbtn = styled.input`
 
 export const Select = styled.select`
     width: 393px;
-    padding: 10px 20px;
+    padding: 6px 15px;
     margin-top: 8px;
     margin-left: 40px;
-    margin-bottom: 8px;
+    margin-bottom: 15px;
     color: #01bf71;
     border-radius: 3px;
     border: 1px solid #ccc;

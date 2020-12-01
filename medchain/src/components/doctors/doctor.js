@@ -1,26 +1,77 @@
 import React, { useState } from 'react';
 import { ArrowForward, ArrowRight } from '../LogIn/login.elements';
-import { DoctorBackground, InputButton, FormWrapper, BlockchainWrapper, Input } from './doctor.elements';
+import { DoctorBackground, FormWrapper, BlockchainWrapper } from './doctor.elements';
 import  MedicalForm  from './medicalform';
-
+import FindPatient  from './find';
+import { Input, InputButton } from './find.elements'
+import testjson from './test.json';
 
 const Doctor = () => {
 
-    const [hover, setHover] = useState(false)
-
+    const [hover, setHover] = useState(false);
+    const [key, setKey] = useState('');
+    const [blockchain,setBlockchain] = useState('');
+    const [clicked, setClicked] = useState(false);
+    const data1 = '/cadd75339625c5401af9b5cce0b0d402f56c44891001a885ca93f8f24b48079f'
     const onHover = () => {
         setHover(!hover)
+    };
+
+    const handleSubmit = e => {
+        console.log(key);
+
+
+        fetch('/search/patient/' + key, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            })
+            .then(response => response.json())
+            .then(data => {
+                setBlockchain(data.name);
+                console.log('Success:', data);
+               
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+              });
+        setClicked(true);
+        setKey('');
+            
+        e.preventDefault();
     }
 
+    const handleChange = (event) =>{
+        setKey(event.target.value);
+        console.log('change handled');
+    }
+    const closeModal = () =>{
+        setClicked(false);
+    }
+   
     return (
         <DoctorBackground>
                 <FormWrapper>
                     <MedicalForm />
                 </FormWrapper>
-                <BlockchainWrapper>
-                    <Input></Input>
-                    <InputButton type='submit' value="Find Patients Blockchain" /> 
-                     
+                <div style={clicked ? {border:"2px solid red",position:"fixed",right:"0%",top:"0%",width:"45vw", height:"100vh", display:"flex", alignItems:"center",flexDirection:"column", overflow:"scroll"} : {visibility:"hidden"}}>
+                    <div style={{position:"absolute", right:"5%",top:'0%',fontSize:"6rem",cursor:"pointer"}} onClick={closeModal} >X</div>
+                    {testjson.chain.map(function(data,index) {
+                    return( 
+                        <div style={{border:"2px dotted purple",width:"max-content"}} key={index}> 
+                            <h1>{data.name} </h1>
+                            <p> illness:{data.illness} 
+                                <br/> gender:{data.gender} 
+                                <br/> sex:{data.sex} 
+                            </p>
+                        </div>
+                    )})}
+                </div>
+            
+                <BlockchainWrapper onSubmit={handleSubmit} >
+                    <Input value={key} onChange={handleChange}/>
+                    <InputButton type='submit' value="Find Patients Blockchain" />  
                 </BlockchainWrapper>
         </DoctorBackground>
     )
