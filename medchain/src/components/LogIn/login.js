@@ -51,7 +51,12 @@ function Login () {
                 <LogoContainer>
                     <Logo/> MedChain
                 </LogoContainer>
-                <SearchPage />
+                <Searchwrapper>
+                    <form>
+                        <Input type='text' placeholder='Please enter your key...'>
+                        </Input>
+                    </form>
+                </Searchwrapper>
                 {/* <FormGroup row>
                 <FormControlLabel
                     control={<GreenCheckbox checked={state.doctor} onChange={handleChange} name="doctor" />}
