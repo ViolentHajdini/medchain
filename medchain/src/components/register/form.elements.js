@@ -2,8 +2,7 @@ import styled from 'styled-components';
 
 export const FormWrapper = styled.form`
    width:500px;
-   padding: 12px 20px;
-   margin: 20px;
+   margin: 10px;
    display: flex;
    flex-direction: column;
    border-radius: 4px; 
@@ -42,7 +41,8 @@ export const Select = styled.select`
     width: 393px;
     padding: 10px 20px;
     margin-top: 8px;
-    margin-bottom: 170px;
+    margin-left: 40px;
+    margin-bottom: 8px;
     color: #01bf71;
     border-radius: 3px;
     border: 1px solid #ccc;

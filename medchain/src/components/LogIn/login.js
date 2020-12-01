@@ -7,6 +7,7 @@ import { withStyles } from '@material-ui/core/styles';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
+import Form from '../register/form'
 
 
 const GreenCheckbox = withStyles({
@@ -51,7 +52,7 @@ function Login () {
                     <Logo/> MedChain
                 </LogoContainer>
                 <SearchPage />
-                <FormGroup row>
+                {/* <FormGroup row>
                 <FormControlLabel
                     control={<GreenCheckbox checked={state.doctor} onChange={handleChange} name="doctor" />}
                     label="Doctor"
@@ -67,8 +68,9 @@ function Login () {
                         color: "white",
                       }}
                     />
-                </FormGroup>
-                
+                </FormGroup> */}
+
+                <Form/>
                 <HeaderbtnWrapper>
                 <Button to ='cotact' 
                     onMouseEnter={onHover} 
