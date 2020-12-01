@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { ArrowForward, ArrowRight } from '../LogIn/login.elements';
-import { DoctorBackground, FormWrapper, BlockchainWrapper, Paragraph } from './doctor.elements';
+import { DoctorBackground, FormWrapper, BlockchainWrapper, Paragraph, Header } from './doctor.elements';
 import  MedicalForm  from './medicalform';
 import FindPatient  from './find';
 import { Input, InputButton } from './find.elements'
@@ -63,17 +63,14 @@ const Doctor = () => {
                     {blockchain.map(function(data,index) {
                     return( 
                         <div style={{border:"2px dotted purple",width:"max-content"}} key={index}> 
-                            <h1>index:{data.index}  </h1>
-                            <Paragraph>
-                                
+                            <Header>index:{data.index}  </Header>
+                            <Paragraph> 
                                 timestamp: {data.timestamp}
                                 <br/> hospital: {data.hospital}
                                 <br/> diagnosis: {data.diagnosis}
                                 <br/> perscription: {data.perscription}
                                 <br/> comment: {data.comment}
-                                <br/> previous: {data.previous_hash}
-                                
-                                
+                                <br/> previous: {data.previous_hash}     
                             </Paragraph>
 
                         </div>
