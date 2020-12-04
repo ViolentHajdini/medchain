@@ -27,7 +27,7 @@ export const Login = () => {
 
     return (
         <Container>
-            { auth === true ? opt === "doctor" ? <Redirect to="/doctor" /> : <Redirect to="/patient/"/> : null}
+            { auth === true ? opt === "doctor" ? <Redirect to="/doctor" /> : <Redirect to={{pathname: '/patient/:id', state:{id: key}}}/> : null}
             <Background>
                 <VideoBg autoPlay loop muted src={sample} type='video/mp4' />
             </Background>

@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import { ArrowForward, ArrowRight } from '../LogIn/login.elements';
-import { DoctorBackground, FormWrapper, BlockchainWrapper, Paragraph, Header } from './doctor.elements';
+import { DoctorBackground, FormWrapper, Blockchain, BlockchainWrapper,CloseIcon, Paragraph, Line, Modal } from './doctor.elements';
 import  MedicalForm  from './medicalform';
-import FindPatient  from './find';
 import { Input, InputButton } from './find.elements'
 import testjson from './test.json';
 
@@ -13,7 +11,8 @@ const Doctor = () => {
     const [key, setKey] = useState('');
     const [blockchain,setBlockchain] = useState(testjson.chain);
     const [clicked, setClicked] = useState(false);
-    const data1 = '/cadd75339625c5401af9b5cce0b0d402f56c44891001a885ca93f8f24b48079f'
+    const data1 = 'cadd75339625c5401af9b5cce0b0d402f56c44891001a885ca93f8f24b48079f'
+    const [stat,setStat]= useState('')
     const onHover = () => {
         setHover(!hover)
     };
@@ -24,24 +23,42 @@ const Doctor = () => {
 
         fetch('/record/chain/' + key, {
             method: 'GET',
-            headers: {
+            headers: {  
                 'Content-Type': 'application/json',
             },
             })
-            .then(response => response.json())
+            .then(response => {
+                setStat(response.status);
+                if(response.ok < 300){
+                    setClicked(true);
+                    console.log('here');
+                }
+                if(!response.ok){
+                    setClicked(false);
+                    console.log('here1');
+                }
+                console.log(response.status);
+                return response.json();
+            })
             .then(data => {
                 setBlockchain(data);
+                
                 console.log('Success:', data);
-               
+              
             })
             .catch((error) => {
                 console.error('Error:', error);
               });
-        setClicked(true);
+              
+        
         setKey('');
 
         e.preventDefault();
        
+    }
+
+    const test = () => {
+        setClicked(true);
     }
 
     const handleChange = (event) =>{
@@ -58,24 +75,23 @@ const Doctor = () => {
                 <FormWrapper>
                     <MedicalForm />
                 </FormWrapper>
-                <div style={(clicked && blockchain !== 0 ) ? {backgroundColor:"#EFEFE8FF",position:"fixed",right:"0%",top:"0%",width:"45vw", height:"100vh", display:"flex", alignItems:"center",flexDirection:"column", overflow:"scroll"} : {display:"none"}}>
-                    <div style={{position:"fixed",right:"0%",fontSize:"2.5rem",cursor:"pointer"}} onClick={closeModal} >X</div>
+                <Modal bool={clicked}>
+                    <CloseIcon onClick={closeModal}> X </CloseIcon>
                     {blockchain.map(function(data,index) {
                     return( 
-                        <div style={{backgroundColor: "#01bf71",width:"max-content", color:"white", margin:"10px"}} key={index}> 
-                            <Header>index:{data.index}  </Header>
+                       <Blockchain key={index}> 
+                                <Line>index:{data.index}</Line> 
                             <Paragraph> 
-                                timestamp: {data.timestamp}
-                                <br/> hospital: {data.hospital}
-                                <br/> diagnosis: {data.diagnosis}
-                                <br/> perscription: {data.perscription}
-                                <br/> comment: {data.comment}
-                                <br/> previous: {data.previous_hash}     
+                                <Line>TIMESTAMP:  {data.timestamp}</Line>
+                                <Line>HOSPITAL:  {data.hospital}</Line>
+                                <Line>DIAGNOSIS:  {data.diagnosis}</Line>
+                                <Line>PERSCRIPTION:  {data.perscription}</Line>
+                                <Line>COMMENT:  {data.comment}</Line>
+                                <Line>PREVIOUS HASH:  {data.previous_hash}</Line>         
                             </Paragraph>
-
-                        </div>
+                        </Blockchain>
                     )})}
-                </div>
+                </Modal>
             
                 <BlockchainWrapper onSubmit={handleSubmit} >
                     <Input placeholder="ID" value={key} onChange={handleChange}/>

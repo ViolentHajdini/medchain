@@ -47,12 +47,70 @@ export const InputButton = styled.input`
     }
 `
 
+export const Modal = styled.div.attrs((props)=>({
+    clicked: props.bool,
+
+}))`
+    background-color:#EFEFE8FF;
+    position:fixed;
+    right:0%;
+    top:0%;
+    width:45vw;
+    height:100vh; 
+    display:${props => (props.clicked ? 'flex' : 'none')}; 
+    align-items:center;
+    flex-direction:column; 
+    overflow-y:scroll; 
+
+`
+
+export const Blockchain = styled.div`
+    background-color: #01bf71;
+    width: 530px;
+    color: white;
+    margin: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border:hidden;
+    border-radius:12px;
+    padding-top: 10px;
+    padding-bottom: 20px;
+
+`
+
 export const Paragraph = styled.p`
     font-family: 'Montserrat', sans-serif;
     font-weight: 500;
-    font-size: 11px;
+    font-size: 14px;
     display:flex;
-    align-items:flex-start;
+    align-items:flex-end;
+    width: 350px;
+    min-height: 100px;
+    text-align:left;
+    display: flex;
+    justify-content: right;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    flex-direction: column;
+    margin: 0px;
+    padding: 0px;
+`
+
+export const CloseIcon = styled.div`
+    position: fixed;
+    right: 0;
+    margin-right: 30px;
+    margin-top: 5px;
+    font-size: 2rem;
+    cursor: pointer;
+    color: #01bf71;
+    font-weight: bold;
+    &:hover{ 
+        color: #00ab65;
+    }
 `
 
 export const Header = styled.p`
@@ -61,4 +119,18 @@ export const Header = styled.p`
     font-size: 15px;
     margin-left: 5px;
     margin-right: 5px;
+    text-align:center;
+    display:flex;
+    align-items:right;
+    justify-content:center;
+    flex-direction:column;
+    margin:0px;
+    padding:0px;
+`
+
+export const Line = styled.div`
+    word-wrap: break-word;
+    width: 400px;
+    height: max-content;
+    margin: 5px;
 `

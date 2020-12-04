@@ -67,8 +67,6 @@ export const InfoWrapper = styled.div`
     padding-top: 10px;
     font-family: 'Montserrat', sans-serif;
     font-weight: 500;
-}
-
 `
 
 export const Photo = styled.div`
@@ -83,5 +81,8 @@ export const Photo = styled.div`
     background-position: center center;
     text-decoration: none;
     margin-left: 8px;
-
+`
+export const Blockchain = styled.div `
+    height: 100px;
+    width: 100px;   
 `

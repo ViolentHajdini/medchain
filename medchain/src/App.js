@@ -1,9 +1,8 @@
 import './App.css';
+import React,{ Component } from 'react';
 import { Login } from  './components/LogIn/login';
-import Register from './components/register/register';
 import Doctor from './components/doctors/doctor';
 import Patient from './components/patient/patient'
-import Displayjson from './components/display/displayjson';
 
 import {BrowserRouter as Router,
 Switch,
@@ -12,7 +11,9 @@ Link
 } from "react-router-dom";
 
 
-function App() {
+class App extends Component {
+
+  render(){
   return (
     <div className="App">
       <Router>
@@ -23,7 +24,7 @@ function App() {
         </Switch>
       </Router>
     </div>
-  );
+  );}
 }
 
 export default App;
