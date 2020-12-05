@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { DoctorBackground, FormWrapper, Blockchain, BlockchainWrapper,CloseIcon, Paragraph, Line, Modal } from './doctor.elements';
+import { DoctorBackground, FormWrapper, Blockchain, BlockchainWrapper,CloseIcon, Paragraph, Line, Modal, Tags } from './doctor.elements';
 import  MedicalForm  from './medicalform';
 import { Input, InputButton } from './find.elements'
 import testjson from './test.json';
@@ -80,14 +80,14 @@ const Doctor = () => {
                     {blockchain.map(function(data,index) {
                     return( 
                        <Blockchain key={index}> 
-                                <Line>index:{data.index}</Line> 
+                                <Line>Record: {data.index}</Line> 
                             <Paragraph> 
-                                <Line>TIMESTAMP:  {data.timestamp}</Line>
-                                <Line>HOSPITAL:  {data.hospital}</Line>
-                                <Line>DIAGNOSIS:  {data.diagnosis}</Line>
-                                <Line>PERSCRIPTION:  {data.perscription}</Line>
-                                <Line>COMMENT:  {data.comment}</Line>
-                                <Line>PREVIOUS HASH:  {data.previous_hash}</Line>         
+                                <Line> <Tags>TIMESTAMP:</Tags> {data.timestamp}</Line>
+                                <Line> <Tags> HOSPITAL:</Tags> {data.hospital}</Line>
+                                <Line><Tags>DIAGNOSIS:</Tags>  {data.diagnosis}</Line>
+                                <Line><Tags>PERSCRIPTION:</Tags>  {data.perscription}</Line>
+                                <Line><Tags>COMMENT:</Tags>  {data.comment}</Line>
+                                {/* <Line><Tags>PREVIOUS HASH:</Tags>  {data.previous_hash}</Line>          */}
                             </Paragraph>
                         </Blockchain>
                     )})}
