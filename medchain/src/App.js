@@ -16,7 +16,7 @@ class App extends Component {
   constructor(props){
     super(props);
     this.state = {
-      id:"123",
+      id:"",
       something:{}
     }
     this.handleAlter = this.handleAlter.bind(this);

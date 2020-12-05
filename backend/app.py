@@ -9,8 +9,11 @@ app     = Flask(__name__)
 archive = Archive()
 node    = Node()
 
+# @TODO REMOVE THIS SHIT LATER
 chain = Chain(id='cadd75339625c5401af9b5cce0b0d402f56c44891001a885ca93f8f24b48079f')
+chain2 = Chain(id='635f25285d53b1f77690c9382af70d27934057dcb3ad578bc16d406805c028c')
 archive.add_record(chain)
+archive.add_record(chain2)
 
 DB_KEY = "mongodb+srv://dave:dave@cluster0.sj9u0.mongodb.net/user?retryWrites=true&w=majority"
 client = pymongo.MongoClient(DB_KEY)
