@@ -3,7 +3,7 @@ import { Form, MedicalFormWrapper, Inputs, InputWrapperOne, InputsTwo, InputsThr
 import { InputButton } from './doctor.elements';
 const axios = require('axios');
 
-const MedicalForm = () => {
+const MedicalForm = props => {
     const [id, setId] = useState('')
     const [hospital, setHospital] = useState('')
     const [diagnosis, setDiagnosis] = useState('')
@@ -27,6 +27,7 @@ const MedicalForm = () => {
         setDiagnosis('');
         setPerscription('');
         setComment('');
+        props.handleRemount(id);
     }
 
     return (
