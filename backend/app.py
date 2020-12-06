@@ -1,13 +1,16 @@
 from flask import Flask, jsonify, request
 from archive import Archive
 from blockchain import Chain, Node
-import requests
-import pymongo
+from client import Client
+import requests, pymongo, json
+#from jsonsocketclient import sendJ
+
 
 # Instantiate the Node
-app     = Flask(__name__)
-archive = Archive()
-node    = Node()
+app      = Flask(__name__)
+archive  = Archive()
+node     = Node()
+protocol = sendJ()
 
 # @TODO REMOVE THIS SHIT LATER
 chain = Chain(id='cadd75339625c5401af9b5cce0b0d402f56c44891001a885ca93f8f24b48079f')
@@ -43,8 +46,12 @@ def record():
     id = values['id']
     data = values['data']
     record = archive.fetch_record(id)
+
+    block = record.new_block(record.hash(record.last_block), data=data)
+    protocol.set_data = json.dumps(block)
+    protocol.listen()
     
-    return jsonify(record.new_block(record.hash(record.last_block), data=data)), 201
+    return jsonify(block), 200
 
 
 

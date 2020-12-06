@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { PatientBackground, Logo, LogoWrp, BackgroundWrapper, PatientInfo, InfoWrapper, Photo, Blockchain, BlockchainWrapper } from './patient.elements'
+import { PatientBackground, Logo, LogoWrp, BackgroundWrapper, PatientInfo, InfoWrapper, QRWrapper, Blockchain, BlockchainWrapper } from './patient.elements'
 import { Redirect } from "react-router-dom";
+import QRCode from "react-qr-code";
 
 const Patient = props => {    
     const [blockchain,setBlockchain] = useState([]);
@@ -47,8 +48,9 @@ const Patient = props => {
                     <h1>key:{props.id}</h1>
                     <button onClick={handleEffect}> click </button>
                 </InfoWrapper>
-                <Photo>
-                </Photo>
+                <QRWrapper>
+                    <QRCode value ='{"pubkey": 19872738923, "sig": 1278172hf1a96}'/> 
+                </QRWrapper>
             </PatientInfo>
             <BlockchainWrapper>
                 <Blockchain>

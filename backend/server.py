@@ -5,10 +5,10 @@ import json
 #Bport refers to the Broadcasting port
 #this needed a seperate port as to not conflict with the message sending on the main port
 HEADER = 512
-PORT = 5050
+PORT = 12345
 BPORT = 50505
-SERVER = socket.gethostbyname(socket.gethostname())
-BROADCAST = socket.gethostbyname(socket.gethostname())
+SERVER = socket.gethostbyname(socket.getfqdn(socket.gethostname()))
+BROADCAST = socket.gethostbyname(socket.getfqdn(socket.gethostname()))
 ADDR = (SERVER, PORT)
 BADDR = (BROADCAST, BPORT)
 FORMAT = 'utf-8'
@@ -26,7 +26,7 @@ broadcast_socket.bind(BADDR)
 
 #broadcasting function that sends the message passed by a client to all other clients
 #it also echos the message to the original client
-def broadcast(msg):
+def broadcast(msg):x
     for client in CLIENT_LIST:
         message = msg.encode(FORMAT)
         msg_length = len(message)
@@ -48,7 +48,6 @@ def list_check(current_client):
 
 #checks the client to see if they are available and valid for connection
 def available(conn):
-
     check_length  = conn.recv(HEADER).decode(FORMAT)
     if check_length:
         check_length = int(check_length)
@@ -126,8 +125,8 @@ def handle_client(Bconn, Baddr, conn, addr, new_client):
 
 #starts the server and threads
 def start():
-    server.listen(),
-    broadcast_socket.listen(),
+    server.listen(5),
+    broadcast_socket.listen(5),
     print(f"[LISTENING] server is listening on {SERVER}")
     while True:
         conn, addr = server.accept()

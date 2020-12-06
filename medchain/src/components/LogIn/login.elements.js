@@ -124,3 +124,8 @@ export const Button = styled.button`
         background: ${({primary}) => (primary ? '#fff' : '#28df99')};
     }
 `
+
+export const QRWrapper = styled.div `
+    width: 250px;
+    height: 200px;
+`

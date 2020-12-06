@@ -4,27 +4,28 @@ import json
 HOST = '127.0.0.1'  # The server's hostname or IP address
 PORT = 5050         # The port used by the server
 
-def json_message(direction):
-    local_ip = socket.gethostbyname(socket.gethostname())
-    data = {
-        'Patients Name': direction
-    }
+class sendJ: 
 
-    json_data = json.dumps(data, sort_keys=False, indent=2)
-    print("data %s" % json_data)
+    
 
-    send_message(json_data + ";")
+    def json_message(self ,direction):
+        local_ip = socket.gethostbyname(socket.gethostname())
+        data = {
+            self.direction
+        }
 
-    return json_data
+        json_data = json.dumps(data, sort_keys=False, indent=2)
+        print("data %s" % json_data)
+
+        send_message(json_data + ";")
+
+        return json_data
 
 
+    def send_message(data):
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.connect((HOST, PORT))
+            s.sendall(data.encode())
+            data = s.recv(1024)
 
-def send_message(data):
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.connect((HOST, PORT))
-        s.sendall(data.encode())
-        data = s.recv(1024)
-
-    print('Received', repr(data))
-
-json_message("Andriy")
+        print('Received', repr(data))
