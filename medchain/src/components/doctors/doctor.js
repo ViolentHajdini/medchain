@@ -13,7 +13,7 @@ const Doctor = props => {
     const [clicked, setClicked] = useState(false);
     const data1 = 'cadd75339625c5401af9b5cce0b0d402f56c44891001a885ca93f8f24b48079f'
     const [stat,setStat]= useState('');
-    const [remount,setRemount] = useState(false);
+   
    
     const handleRemount = () =>{
        getData();
