@@ -10,7 +10,7 @@ import requests, pymongo, json
 app      = Flask(__name__)
 archive  = Archive()
 node     = Node()
-#protocol = sendJ()
+protocol = Client()
 
 # @TODO REMOVE THIS SHIT LATER
 chain = Chain(id='cadd75339625c5401af9b5cce0b0d402f56c44891001a885ca93f8f24b48079f')
@@ -48,7 +48,7 @@ def record():
     record = archive.fetch_record(id)
 
     block = record.new_block(record.hash(record.last_block), data=data)
-    protocol.set_data = json.dumps(block)
+    protocol.set_data = json.dumps(block, sort_keys=True)
     protocol.listen()
     
     return jsonify(block), 200

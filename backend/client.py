@@ -41,7 +41,7 @@ class Client:
         self.BROADCAST = socket.gethostbyname(socket.getfqdn(socket.gethostname()))
         self.ADDR = (self.SERVER, self.PORT)
         self.BADDR = (self.BROADCAST, self.BPORT)
-        self.HEADER = 512
+        self.HEADER = 1024
         self.FORMAT = 'utf-8'
         self.DISCONNECT_MESSAGE = "DISCONNECTED"
         self.ACKNOWLEDGE_MESSAGE = "ACKNOWLEDGED"
@@ -55,19 +55,16 @@ class Client:
     def send(self, msg):
         # if check_server(msg,client):
         if self.CONNECTED == True:
+
+
             if self.check_server(msg):
                 if msg != self.DISCONNECT_MESSAGE:
-                    input = msg.encode(self.FORMAT)
-                    input_length = len(input)
-                    msg = json.loads(msg)
-                    msg['packetsize'] = input_length
-                    msg = json.dumps(msg)
-                    message = msg.encode(self.FORMAT)
-                    msg_length = len(message)
-                    send_length = str(msg_length).encode(self.FORMAT)
+                    user_input = msg.encode(self.FORMAT)
+                    input_length = len(user_input)
+                    send_length = str(input_length).encode(self.FORMAT)
                     send_length += b' ' * (self.HEADER - len(send_length))
                     self.client_socket.send(send_length)
-                    self.client_socket.send(message)
+                    self.client_socket.send(user_input)
                 else:
                     message = msg.encode(self.FORMAT)
                     msg_length = len(message)
@@ -145,4 +142,8 @@ class Client:
                 return True
 
             else:
+
                 return False
+
+
+

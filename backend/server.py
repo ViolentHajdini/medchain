@@ -4,7 +4,7 @@ import json
 #The Globals needed to run server
 #Bport refers to the Broadcasting port
 #this needed a seperate port as to not conflict with the message sending on the main port
-HEADER = 512
+HEADER = 1024
 PORT = 12345
 BPORT = 50505
 SERVER = socket.gethostbyname(socket.getfqdn(socket.gethostname()))
@@ -26,7 +26,7 @@ broadcast_socket.bind(BADDR)
 
 #broadcasting function that sends the message passed by a client to all other clients
 #it also echos the message to the original client
-def broadcast(msg):x
+def broadcast(msg):
     for client in CLIENT_LIST:
         message = msg.encode(FORMAT)
         msg_length = len(message)
@@ -98,24 +98,15 @@ def handle_client(Bconn, Baddr, conn, addr, new_client):
             if msg_length:
                 msg_length = int(msg_length)
                 msg = conn.recv(msg_length).decode(FORMAT)
-
-                msg = json.loads(msg)
-                msg["packetsize"] = msg_length
-                if msg_length != msg["packetsize"]:
-                    print("MESSAGE SENDIN ERROR")
-                else:
-                    if msg["clientID"] == "":
-                        msg["clientID"] = f"Client {threading.activeCount() - 1 + THREAD_OFFSET}"
-                        clientID = msg["clientID"]
-                        broadcast_msg = json.dumps(msg)
-                        broadcast(broadcast_msg)
-                        print(f"[{addr}] {msg}")
-                        print(CLIENT_LIST)
-                        new_client = False
+            broadcast_msg = json.dumps(msg)
+            broadcast(broadcast_msg)
+            print(f"[{addr}] {msg}")
+            print(CLIENT_LIST)
+            new_client = False
 
         else:
                 list_check(Baddr)
-                print(f"[{clientID} {addr}]{(DISCONNECT_MESSAGE)}")
+                print(f"[{addr}]{(DISCONNECT_MESSAGE)}")
                 Bconn.close()
                 print(Bconn)
                 conn.close()
@@ -133,7 +124,7 @@ def start():
         Bconn, Baddr = broadcast_socket.accept()
         if available(conn) == True:
             new_client = True
-            thread = threading.Thread(target = handle_client, args = (Bconn,Baddr,conn, addr, new_client))
+            thread = threading.Thread(target = handle_client, args = (Bconn, Baddr,conn, addr, new_client))
             thread.start()
             clientID = (f"Client {threading.activeCount() - 1 + THREAD_OFFSET}", Bconn, Baddr)
             CLIENT_LIST.append(clientID)
@@ -143,4 +134,3 @@ def start():
 
 print("[STARTING] server is starting...")
 start()
-
