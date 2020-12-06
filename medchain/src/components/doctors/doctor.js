@@ -12,11 +12,12 @@ const Doctor = props => {
     const [blockchain,setBlockchain] = useState([]);
     const [clicked, setClicked] = useState(false);
     const data1 = 'cadd75339625c5401af9b5cce0b0d402f56c44891001a885ca93f8f24b48079f'
+    const data2 = 'f0a781a8380a89ab8db7a6aade46d63d6d8fffc12af8242fbfb41588481095e5';
     const [stat,setStat]= useState('');
     const [remount,setRemount] = useState(false);
     
     useEffect(()=> {
-        if (remount){
+        if (remount && clicked){
             getData();
             setRemount(false);
         }
@@ -33,7 +34,6 @@ const Doctor = props => {
 
         getData();
         
-        //setKey('');
 
         e.preventDefault();
        
@@ -50,10 +50,14 @@ const Doctor = props => {
                 setStat(response.status);
                 if(response.ok){
                     setClicked(true);
+                    //the useEffect function can't call getData() if key is empty
+                    //setKey('');   
                 }
                 if(!response.ok){
-                    setClicked(false);                 
-                    setKey('');   
+                    setClicked(false); 
+                    setKey('');  
+                    alert('ID could not be found');              
+                    
                 }
                 console.log(response.status);
                 return response.json();

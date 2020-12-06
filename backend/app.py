@@ -44,7 +44,7 @@ def record():
     data = values['data']
     record = archive.fetch_record(id)
     
-    return jsonify(record.new_block(record.hash(record.last_block), data=data)), 200
+    return jsonify(record.new_block(record.hash(record.last_block), data=data)), 201
 
 
 
