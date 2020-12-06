@@ -1,10 +1,11 @@
 import React, {useState} from 'react'
-import { Container, HeaderbtnWrapper, Logo, LogoContainer, VideoBg, Background, Content } from './login.elements';
+import { Container, HeaderbtnWrapper, Logo, LogoContainer, VideoBg, Background, Content ,QRWrapper} from './login.elements';
 import sample from '../../video/video.mp4';
 import { Button } from './ButtonElement'
 import { FormWrapper, Select } from '../register/form.elements'
 import { Searchwrapper, Input } from '../Searchbar/searchbar.elements'
 import { Redirect } from "react-router-dom";
+import { Scanner } from "../qrcode/scanner";
 const axios = require('axios');
 
 
@@ -57,6 +58,9 @@ export const Login = () => {
                         onMouseLeave={onHover}
                     />
                 </HeaderbtnWrapper>
+                <QRWrapper>
+                    <Scanner/>
+                </QRWrapper>
             </Content>
         </Container>
     )

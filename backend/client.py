@@ -5,7 +5,7 @@ import json
 
 #B refers to elements for the broadcasting socket which is used to receive
 #messages that are echoed from other clients
-class client:
+class Client:
     client_header = 0
     PORT = 0
     BPORT = 0
@@ -18,6 +18,7 @@ class client:
     DISCONNECT_MESSAGE = 0
     ACKNOWLEDGE_MESSAGE = 0
     CONNECTED = 0
+    set_data = 0
     client_socket = 0
     broadcast_socket = 0
 
@@ -34,10 +35,10 @@ class client:
             "clientID": ""
         }    
         '''
-        self.PORT = 5050
+        self.PORT = 12345
         self.BPORT = 50505
-        self.SERVER = socket.gethostbyname(socket.gethostname())
-        self.BROADCAST = socket.gethostbyname(socket.gethostname())
+        self.SERVER = socket.gethostbyname(socket.getfqdn(socket.gethostname()))
+        self.BROADCAST = socket.gethostbyname(socket.getfqdn(socket.gethostname()))
         self.ADDR = (self.SERVER, self.PORT)
         self.BADDR = (self.BROADCAST, self.BPORT)
         self.HEADER = 512
@@ -85,7 +86,7 @@ class client:
     def handle_connection(self):
         user_input = "n"
         while user_input == "n":
-            self.send(self.client_header)
+            self.send(self.set_data)
             user_input = input()
             if user_input == "q":
                 self.send(self.DISCONNECT_MESSAGE)
@@ -145,20 +146,3 @@ class client:
 
             else:
                 return False
-
-
-
-new_client = client()
-new_client.listen()
-
-"""user_input = "n"
-new_client = client()
-
-while user_input == "n":
-        new_client.send(new_client.client_header)
-        print(new_client.client_header)
-        user_input = input(user_input)
-        if user_input == "q":
-            new_client.send(new_client.DISCONNECT_MESSAGE)
-
-new_client.send(new_client.DISCONNECT_MESSAGE)"""

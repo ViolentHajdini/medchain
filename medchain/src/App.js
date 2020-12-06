@@ -3,6 +3,7 @@ import React,{ Component } from 'react';
 import { Login } from  './components/LogIn/login';
 import Doctor from './components/doctors/doctor';
 import Patient from './components/patient/patient'
+import { Scanner } from './components/qrcode/scanner';
 
 import {BrowserRouter as Router,
 Switch,

@@ -12,6 +12,20 @@ export const PatientBackground = styled.div`
     height: 100vh;
     z-index: 1;
 ` 
+export const QRWrapper = styled.div`
+    display:flex;
+    position: relative;
+    background-repeat:no-repeat;
+    width: 450px;
+    height: 300px;
+    border: none;
+    background-size: contain;
+    background-position: center center;
+    text-decoration: none;
+    margin-left: 8px;
+    align-items: center;
+    justify-content: center;
+`
 
 export const BackgroundWrapper = styled.div`
     display:flex;
@@ -69,19 +83,7 @@ export const InfoWrapper = styled.div`
     font-weight: 500;
 `
 
-export const Photo = styled.div`
-    background-image: url(${photo});
-    display:flex;
-    position: relative;
-    background-repeat:no-repeat;
-    width: 500px;
-    height: 300px;
-    border: none;
-    background-size: contain;
-    background-position: center center;
-    text-decoration: none;
-    margin-left: 8px;
-`
+
 export const Blockchain = styled.div `
     height: 100px;
     width: 100px;   
