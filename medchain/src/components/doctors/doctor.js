@@ -23,7 +23,6 @@ const Doctor = props => {
     });
     
    
-   
     const handleRemount = (data) =>{
         setRemount(data);
     }
