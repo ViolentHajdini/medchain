@@ -1,26 +1,45 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { DoctorBackground, FormWrapper, Blockchain, BlockchainWrapper,CloseIcon, Paragraph, Line, Modal, Tags } from './doctor.elements';
 import  MedicalForm  from './medicalform';
 import { Input, InputButton } from './find.elements'
 import testjson from './test.json';
 
 
-const Doctor = () => {
+const Doctor = props => {
 
-    const [hover, setHover] = useState(false);
+    console.log(props.id);
     const [key, setKey] = useState('');
-    const [blockchain,setBlockchain] = useState(testjson.chain);
+    const [blockchain,setBlockchain] = useState([]);
     const [clicked, setClicked] = useState(false);
     const data1 = 'cadd75339625c5401af9b5cce0b0d402f56c44891001a885ca93f8f24b48079f'
-    const [stat,setStat]= useState('')
-    const onHover = () => {
-        setHover(!hover)
-    };
+    const [stat,setStat]= useState('');
+    const [remount,setRemount] = useState(false);
+    
+    useEffect(()=> {
+        if (remount){
+            getData();
+            setRemount(false);
+        }
+    });
+    
+   
+   
+    const handleRemount = (data) =>{
+        setRemount(data);
+    }
 
     const handleSubmit = e => {
         console.log(key);
 
+        getData();
+        
+        //setKey('');
 
+        e.preventDefault();
+       
+    }
+
+    const getData = () =>{
         fetch('/record/chain/' + key, {
             method: 'GET',
             headers: {  
@@ -29,51 +48,41 @@ const Doctor = () => {
             })
             .then(response => {
                 setStat(response.status);
-                if(response.ok < 300){
+                if(response.ok){
                     setClicked(true);
-                    console.log('here');
                 }
                 if(!response.ok){
-                    setClicked(false);
-                    console.log('here1');
+                    setClicked(false);                 
+                    setKey('');   
                 }
                 console.log(response.status);
                 return response.json();
             })
             .then(data => {
                 setBlockchain(data);
-                
                 console.log('Success:', data);
-              
             })
             .catch((error) => {
                 console.error('Error:', error);
               });
-              
-        
-        setKey('');
 
-        e.preventDefault();
-       
     }
 
-    const test = () => {
-        setClicked(true);
-    }
 
     const handleChange = (event) =>{
         setKey(event.target.value);
         console.log('change handled');
     }
     const closeModal = () =>{
+        setKey('');
         setClicked(false);
+        
     }
-   
    
     return (
         <DoctorBackground>
                 <FormWrapper>
-                    <MedicalForm />
+                    <MedicalForm handleRemount={handleRemount} />
                 </FormWrapper>
                 <Modal bool={clicked}>
                     <CloseIcon onClick={closeModal}> X </CloseIcon>

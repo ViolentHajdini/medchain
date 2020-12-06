@@ -21,7 +21,7 @@ export const FormWrapper = styled.div`
 export const BlockchainWrapper = styled.form`
     width: 45vw;
     height: auto;
-    //overflow-y: scroll;
+    overflow-x:hidden;
     background :#EFEFE8FF;
   
     display: flex;
@@ -80,7 +80,7 @@ export const Blockchain = styled.div`
 
 `
 
-export const Paragraph = styled.p`
+export const Paragraph = styled.div`
     font-family: 'Montserrat', sans-serif;
     font-weight: 500;
     font-size: 14px;

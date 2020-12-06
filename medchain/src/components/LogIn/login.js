@@ -9,7 +9,7 @@ import { Scanner } from "../qrcode/scanner";
 const axios = require('axios');
 
 
-export const Login = () => {
+export const Login = props => {
     const [hover, setHover] = useState(false)
     const [key, setKey] = useState("");
     const [opt, setOpt] = useState("doctor");
@@ -24,11 +24,13 @@ export const Login = () => {
             if (res.data.error) { alert(res.data.error); }
             else { setAuth(true); }
         });
+        props.handleAlter(key);
     }
+
 
     return (
         <Container>
-            { auth === true ? opt === "doctor" ? <Redirect to="/doctor" /> : <Redirect to={{pathname: '/patient/:id', state:{id: key}}}/> : null}
+            { auth === true ? opt === "doctor" ? <Redirect to="/doctor"/> : <Redirect to="/patient/:id"/>: null}
             <Background>
                 <VideoBg autoPlay loop muted src={sample} type='video/mp4' />
             </Background>
