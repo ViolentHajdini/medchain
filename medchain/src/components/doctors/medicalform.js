@@ -21,13 +21,21 @@ const MedicalForm = props => {
                 comment: comment
             }
         })
-        .then(res => console.log(res));
-        setId('');
-        setHospital('');
-        setDiagnosis('');
-        setPerscription('');
-        setComment('');
-        props.handleRemount(true);
+        .then(res => {
+            setId('');
+            setHospital('');
+            setDiagnosis('');
+            setPerscription('');
+            setComment('');
+            props.handleRemount(true);
+            return console.log(res)
+        })
+        .catch(()=>{
+            alert("ID could not be found.");
+            console.log('Error:','ID could not be found');
+        });
+        
+        
     }
 
     return (
