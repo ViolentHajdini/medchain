@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { DoctorBackground, FormWrapper, Blockchain, BlockchainWrapper,CloseIcon, Paragraph, Line, Modal, Tags } from './doctor.elements';
 import  MedicalForm  from './medicalform';
 import { Input, InputButton } from './find.elements'
@@ -7,16 +7,25 @@ import testjson from './test.json';
 
 const Doctor = props => {
 
-   
+    console.log(props.id);
     const [key, setKey] = useState('');
-    const [blockchain,setBlockchain] = useState(testjson.chain);
+    const [blockchain,setBlockchain] = useState([]);
     const [clicked, setClicked] = useState(false);
     const data1 = 'cadd75339625c5401af9b5cce0b0d402f56c44891001a885ca93f8f24b48079f'
     const [stat,setStat]= useState('');
+    const [remount,setRemount] = useState(false);
+    
+    useEffect(()=> {
+        if (remount){
+            getData();
+            setRemount(false);
+        }
+    });
+    
    
    
-    const handleRemount = () =>{
-       getData();
+    const handleRemount = (data) =>{
+        setRemount(data);
     }
 
     const handleSubmit = e => {
@@ -41,22 +50,17 @@ const Doctor = props => {
                 setStat(response.status);
                 if(response.ok){
                     setClicked(true);
-                    console.log('here');
                 }
                 if(!response.ok){
-                    setClicked(false);
-                    console.log('here1');
-                    setKey('');
-                    
+                    setClicked(false);                 
+                    setKey('');   
                 }
                 console.log(response.status);
                 return response.json();
             })
             .then(data => {
                 setBlockchain(data);
-                
                 console.log('Success:', data);
-              
             })
             .catch((error) => {
                 console.error('Error:', error);
@@ -74,11 +78,6 @@ const Doctor = props => {
         setClicked(false);
         
     }
-
-    const test = () =>{
-        console.log(key);
-    }
-   
    
     return (
         <DoctorBackground>

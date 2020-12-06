@@ -27,7 +27,7 @@ const MedicalForm = props => {
         setDiagnosis('');
         setPerscription('');
         setComment('');
-        props.handleRemount(id);
+        props.handleRemount(true);
     }
 
     return (
