@@ -49,7 +49,7 @@ const Patient = props => {
                     <button onClick={handleEffect}> click </button>
                 </InfoWrapper>
                 <QRWrapper>
-                    <QRCode value ='{"pubkey": 19872738923, "sig": 1278172hf1a96}'/> 
+                    <QRCode value ={'"pubkey"'+ props.id +'"sig": 1278172hf1a96'}/> 
                 </QRWrapper>
             </PatientInfo>
             <BlockchainWrapper>
