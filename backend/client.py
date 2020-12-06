@@ -57,17 +57,14 @@ class Client:
         if self.CONNECTED == True:
             if self.check_server(msg):
                 if msg != self.DISCONNECT_MESSAGE:
-                    input = msg.encode(self.FORMAT)
-                    input_length = len(input)
-                    msg = json.loads(msg)
-                    msg['packetsize'] = input_length
-                    msg = json.dumps(msg)
-                    message = msg.encode(self.FORMAT)
-                    msg_length = len(message)
-                    send_length = str(msg_length).encode(self.FORMAT)
+                    user_input = msg.encode(self.FORMAT)
+                    input_length = len(user_input)
+                    packet_header = json.loads(self.client_header)
+                    packet_header['packetsize'] = input_length
+                    send_length = str(input_length).encode(self.FORMAT)
                     send_length += b' ' * (self.HEADER - len(send_length))
                     self.client_socket.send(send_length)
-                    self.client_socket.send(message)
+                    self.client_socket.send(user_input)
                 else:
                     message = msg.encode(self.FORMAT)
                     msg_length = len(message)
@@ -145,4 +142,12 @@ class Client:
                 return True
 
             else:
+
                 return False
+
+
+
+new_client = Client()
+new_client.set_data = '''{"Hello" = false }'''
+new_client.listen()
+
