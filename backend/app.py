@@ -10,7 +10,7 @@ import requests, pymongo, json
 app      = Flask(__name__)
 archive  = Archive()
 node     = Node()
-protocol = sendJ()
+#protocol = sendJ()
 
 # @TODO REMOVE THIS SHIT LATER
 chain = Chain(id='cadd75339625c5401af9b5cce0b0d402f56c44891001a885ca93f8f24b48079f')
