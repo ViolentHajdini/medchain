@@ -60,9 +60,9 @@ export const Login = props => {
                         onMouseLeave={onHover}
                     />
                 </HeaderbtnWrapper>
-                <QRWrapper>
+                {/* <QRWrapper>
                     <Scanner/>
-                </QRWrapper>
+                </QRWrapper> */}
             </Content>
         </Container>
     )
