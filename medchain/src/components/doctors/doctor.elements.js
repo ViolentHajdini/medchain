@@ -65,7 +65,7 @@ export const Modal = styled.div.attrs((props)=>({
 `
 
 export const Blockchain = styled.div`
-    background-color: #f4f4f2;
+    background-color: #01bf71;
     width: 530px;
     color: white;
     margin: 10px;
@@ -97,8 +97,6 @@ export const Paragraph = styled.p`
     flex-direction: column;
     margin: 0px;
     padding: 0px;
-    color: #495464;
-
 `
 
 export const CloseIcon = styled.div`
@@ -135,10 +133,4 @@ export const Line = styled.div`
     width: 400px;
     height: max-content;
     margin: 5px;
-    color: #495464;
-`
-
-export const Tags = styled.p `
-    font-weight: 700;
-    color: #495464
 `
