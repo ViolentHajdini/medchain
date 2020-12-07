@@ -1,12 +1,13 @@
 import React, {useState} from 'react'
-import { Container, HeaderbtnWrapper, Logo, LogoContainer, VideoBg, Background, Content ,QRWrapper} from './login.elements';
+import { Container, HeaderbtnWrapper, Logo, LogoContainer, VideoBg, Background, Content} from './login.elements';
 import sample from '../../video/video.mp4';
 import { Button } from './ButtonElement'
 import { FormWrapper, Select } from '../register/form.elements'
 import { Searchwrapper, Input } from '../Searchbar/searchbar.elements'
 import { Redirect } from "react-router-dom";
-import { Scanner } from "../qrcode/scanner";
+
 const axios = require('axios');
+const crypto = require('crypto');
 
 
 export const Login = props => {
@@ -20,9 +21,20 @@ export const Login = props => {
 
     const handleSubmit = e => {
         e.preventDefault();
-        axios.get(`/search/${opt}/${key}`).then(res => {
-            if (res.data.error) { alert(res.data.error); }
-            else { setAuth(true); }
+
+        // User submits their public key and checks
+        // for the hashed Pk in the database
+        const hash = crypto.createHash('sha256');
+        hash.update(key.toString('utf8'));
+        const addr = hash.digest('hex');
+        
+        axios.get(`/search/${opt}/${addr}`)
+        .then(res => {
+            setAuth(true);
+        })
+        .catch((error) => {
+            console.error('Error: ', error);
+            alert('Key does not exist in the Database');
         });
         props.handleAlter(key);
     }
@@ -30,7 +42,7 @@ export const Login = props => {
 
     return (
         <Container>
-            { auth === true ? opt === "doctor" ? <Redirect to="/doctor"/> : <Redirect to="/patient/:id"/>: null}
+            { auth === true ? opt === "doctor" ? <Redirect to="/doctor"/> : <Redirect to="/patient/:id"/> : null}
             <Background>
                 <VideoBg autoPlay loop muted src={sample} type='video/mp4' />
             </Background>
@@ -60,9 +72,6 @@ export const Login = props => {
                         onMouseLeave={onHover}
                     />
                 </HeaderbtnWrapper>
-                <QRWrapper>
-                    <Scanner/>
-                </QRWrapper>
             </Content>
         </Container>
     )
