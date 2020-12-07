@@ -98,11 +98,11 @@ def handle_client(Bconn, Baddr, conn, addr, new_client):
             if msg_length:
                 msg_length = int(msg_length)
                 msg = conn.recv(msg_length).decode(FORMAT)
-            broadcast_msg = json.dumps(msg)
-            broadcast(broadcast_msg)
-            print(f"[{addr}] {msg}")
-            print(CLIENT_LIST)
-            new_client = False
+                broadcast_msg = json.dumps(msg)
+                broadcast(broadcast_msg)
+                print(f"[{addr}] {msg}")
+                print(CLIENT_LIST)
+                new_client = False
 
         else:
                 list_check(Baddr)
@@ -116,8 +116,8 @@ def handle_client(Bconn, Baddr, conn, addr, new_client):
 
 #starts the server and threads
 def start():
-    server.listen(5),
-    broadcast_socket.listen(5),
+    server.listen(),
+    broadcast_socket.listen(),
     print(f"[LISTENING] server is listening on {SERVER}")
     while True:
         conn, addr = server.accept()

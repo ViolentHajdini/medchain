@@ -169,11 +169,11 @@ class Node:
         )
 
         # Transaction addresses are made of hashing the public key once
-        address = hashes.Hash(hashes.SHA256())
-        address.update(serialized_public_key)
+        encoded_key = serialized_public_key.hex().encode('utf-8')
+        address = hashlib.sha256(encoded_key).hexdigest()
 
         # Return tuple of tx address and public key to verify
-        return (address.finalize().hex(), serialized_public_key.hex())
+        return (address, encoded_key)
 
     def verify_addr(self, addr, pubkey):
         # Regenerate the given addresses
