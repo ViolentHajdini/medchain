@@ -29,8 +29,7 @@ const MedicalForm = props => {
             setId('');
         }
     });
-
-        
+          
     const GreenCheckbox = withStyles({
         root: {
           color:"#01bf71",
@@ -67,8 +66,6 @@ const MedicalForm = props => {
             alert("ID could not be found.");
             console.log('Error:','ID could not be found');
         });
-        
-        
     }
 
     return (

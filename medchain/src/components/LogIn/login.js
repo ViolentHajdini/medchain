@@ -5,7 +5,7 @@ import { Button } from './ButtonElement'
 import { FormWrapper, Select } from '../register/form.elements'
 import { Searchwrapper, Input } from '../Searchbar/searchbar.elements'
 import { Redirect } from "react-router-dom";
-import { Scanner } from "../qrcode/scanner";
+
 const axios = require('axios');
 
 
@@ -20,9 +20,13 @@ export const Login = props => {
 
     const handleSubmit = e => {
         e.preventDefault();
-        axios.get(`/search/${opt}/${key}`).then(res => {
-            if (res.data.error) { alert(res.data.error); }
-            else { setAuth(true); }
+        axios.get(`/search/${opt}/${key}`)
+        .then(res => {
+            setAuth(true);
+        })
+        .catch((error) => {
+            console.error('Error: ', error);
+            alert('Key does not exist in the Database');
         });
         props.handleAlter(key);
     }
@@ -60,9 +64,6 @@ export const Login = props => {
                         onMouseLeave={onHover}
                     />
                 </HeaderbtnWrapper>
-                {/* <QRWrapper>
-                    <Scanner/>
-                </QRWrapper>*/}
             </Content>
         </Container>
     )
