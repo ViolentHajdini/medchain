@@ -4,7 +4,7 @@ import json
 #The Globals needed to run server
 #Bport refers to the Broadcasting port
 #this needed a seperate port as to not conflict with the message sending on the main port
-HEADER = 512
+HEADER = 1024
 PORT = 12345
 BPORT = 50505
 SERVER = socket.gethostbyname(socket.getfqdn(socket.gethostname()))
@@ -88,7 +88,7 @@ def available(conn):
             return False
 
 #handles the connection between the clients individually
-def handle_client(Bconn, Baddr, conn, addr, new_client, clientID):
+def handle_client(Bconn, Baddr, conn, addr, new_client):
     print(f"[NEW CONNECTION] {addr} connected.")
 
     connected = True
@@ -100,7 +100,7 @@ def handle_client(Bconn, Baddr, conn, addr, new_client, clientID):
                 msg = conn.recv(msg_length).decode(FORMAT)
             broadcast_msg = json.dumps(msg)
             broadcast(broadcast_msg)
-            print(f"[{clientID} {addr}] {msg}")
+            print(f"[{addr}] {msg}")
             print(CLIENT_LIST)
             new_client = False
 
@@ -124,7 +124,7 @@ def start():
         Bconn, Baddr = broadcast_socket.accept()
         if available(conn) == True:
             new_client = True
-            thread = threading.Thread(target = handle_client, args = (Bconn, Baddr,conn, addr, new_client, clientID))
+            thread = threading.Thread(target = handle_client, args = (Bconn, Baddr,conn, addr, new_client))
             thread.start()
             clientID = (f"Client {threading.activeCount() - 1 + THREAD_OFFSET}", Bconn, Baddr)
             CLIENT_LIST.append(clientID)

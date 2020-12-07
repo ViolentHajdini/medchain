@@ -41,7 +41,7 @@ class Client:
         self.BROADCAST = socket.gethostbyname(socket.getfqdn(socket.gethostname()))
         self.ADDR = (self.SERVER, self.PORT)
         self.BADDR = (self.BROADCAST, self.BPORT)
-        self.HEADER = 512
+        self.HEADER = 1024
         self.FORMAT = 'utf-8'
         self.DISCONNECT_MESSAGE = "DISCONNECTED"
         self.ACKNOWLEDGE_MESSAGE = "ACKNOWLEDGED"
@@ -53,14 +53,12 @@ class Client:
 
 #Sends messages from the client to the server. It also begins the check to see if the server is available
     def send(self, msg):
-        # if check_server(msg,client):
+        
         if self.CONNECTED == True:
             if self.check_server(msg):
                 if msg != self.DISCONNECT_MESSAGE:
                     user_input = msg.encode(self.FORMAT)
                     input_length = len(user_input)
-                    packet_header = json.loads(self.client_header)
-                    packet_header['packetsize'] = input_length
                     send_length = str(input_length).encode(self.FORMAT)
                     send_length += b' ' * (self.HEADER - len(send_length))
                     self.client_socket.send(send_length)
@@ -147,7 +145,5 @@ class Client:
 
 
 
-new_client = Client()
-new_client.set_data = '''{"Hello" = false }'''
-new_client.listen()
+
 
