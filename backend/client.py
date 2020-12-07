@@ -18,7 +18,7 @@ class Client:
     DISCONNECT_MESSAGE = 0
     ACKNOWLEDGE_MESSAGE = 0
     CONNECTED = 0
-    set_data = 0
+    block_chain = 0
     client_socket = 0
     broadcast_socket = 0
 
@@ -48,13 +48,16 @@ class Client:
         self.CONNECTED = True
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.broadcast_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.client_socket.connect(self.ADDR)
-        self.broadcast_socket.connect(self.BADDR)
+
+    def set_data(self,data):
+        self.block_chain = data
 
 #Sends messages from the client to the server. It also begins the check to see if the server is available
     def send(self, msg):
-        
+        # if check_server(msg,client):
         if self.CONNECTED == True:
+
+
             if self.check_server(msg):
                 if msg != self.DISCONNECT_MESSAGE:
                     user_input = msg.encode(self.FORMAT)
@@ -64,6 +67,7 @@ class Client:
                     self.client_socket.send(send_length)
                     self.client_socket.send(user_input)
                 else:
+                    print(True)
                     message = msg.encode(self.FORMAT)
                     msg_length = len(message)
                     send_length = str(msg_length).encode(self.FORMAT)
@@ -80,23 +84,45 @@ class Client:
 #this is meant to change depending on implementation
     def handle_connection(self):
         user_input = "n"
-        while user_input == "n":
-            self.send(self.set_data)
+        while user_input == "n" and self.block_chain != self.DISCONNECT_MESSAGE:
+            self.send(self.block_chain)
             user_input = input()
             if user_input == "q":
                 self.send(self.DISCONNECT_MESSAGE)
+        self.send(self.DISCONNECT_MESSAGE)
         threading.main_thread().join()
 
 #listens for a broadcasted message while continuously being able to send messages to the server
-    def listen(self):
-        thread = threading.Thread(target=self.handle_connection, args=())
-        thread.start()
-        while True:
-            data_length = self.broadcast_socket.recv(self.HEADER).decode(self.FORMAT)
-            if data_length:
-                data_length = int(data_length)
-                server_data = self.broadcast_socket.recv(data_length).decode(self.FORMAT)
-                print (f"Broadcasted data: {server_data}")
+    def activate(self):
+        self.client_socket.connect(self.ADDR)
+        self.broadcast_socket.connect(self.BADDR)
+        flag_check = json.loads(self.block_chain)
+
+
+        if flag_check[0]["send"]:
+            thread = threading.Thread(target=self.handle_connection, args=())
+            thread.start()
+            while True:
+                data_length = self.broadcast_socket.recv(self.HEADER).decode(self.FORMAT)
+                if data_length:
+                    data_length = int(data_length)
+                    server_data = self.broadcast_socket.recv(data_length).decode(self.FORMAT)
+                    print (f"Broadcasted data: {server_data}")
+                    self.set_data(server_data)
+
+        elif flag_check[0]["Disconnect"]: 
+            self.set_data(self.DISCONNECT_MESSAGE)
+            self.handle_connection()
+
+        else: 
+            while True:
+                data_length = self.broadcast_socket.recv(self.HEADER).decode(self.FORMAT)
+                if data_length:
+                    data_length = int(data_length)
+                    server_data = self.broadcast_socket.recv(data_length).decode(self.FORMAT)
+                    print (f"Broadcasted data: {server_data}")
+                    self.set_data(server_data)
+
 
 
 #checks the server for availability
