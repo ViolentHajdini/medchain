@@ -27,11 +27,11 @@ const Doctor = props => {
 
     const handleScan = data => {
         if (data) {
-            let temp = JSON.parse(data);
-            setToken([temp.pubkey,temp.sig]);
+            let user = JSON.parse(data);
+            setToken([user.pubkey,user.sig]);
             setClicked(true);
-            if(temp.pubkey.length > 0){
-                setKey(temp.pubkey);
+            if(user.pubkey.length > 0){
+                setKey(user.pubkey);
                 setRemount(true);
             }
             console.log('scanned');
@@ -39,9 +39,9 @@ const Doctor = props => {
       }
       
   
-      const handleError = err => {
+    const handleError = err => {
         console.error(err);
-      }
+    }
    
     const handleRemount = (data) =>{
         setRemount(data);
@@ -103,24 +103,25 @@ const Doctor = props => {
         <DoctorBackground>
                 <FormWrapper>
                     <MedicalForm onlyOneBlock={onlyOneBlock} check={clicked} pubkey={token[0]} sig={token[1]} handleRemount={handleRemount} />
-                    {console.log(key)}
                 </FormWrapper>
                 <Modal bool={clicked}>  
                     <CloseIcon onClick={closeModal}> X </CloseIcon>
-                    {blockchain.map(function(data,index) {
-                    return( 
-                       <Blockchain key={index}> 
+                    {
+                    blockchain.map((data, index) => {
+                        return( 
+                        <Blockchain key={index}> 
                                 <Line>Record: {data.index}</Line> 
-                            <Paragraph> 
-                                <Line> <Tags>TIMESTAMP:</Tags> {data.timestamp}</Line>
-                                <Line> <Tags> HOSPITAL:</Tags> {data.hospital}</Line>
-                                <Line><Tags>DIAGNOSIS:</Tags>  {data.diagnosis}</Line>
-                                <Line><Tags>PERSCRIPTION:</Tags>  {data.perscription}</Line>
-                                <Line><Tags>COMMENT:</Tags>  {data.comment}</Line>
-                                {/* <Line><Tags>PREVIOUS HASH:</Tags>  {data.previous_hash}</Line>          */}
-                            </Paragraph>
-                        </Blockchain>
-                    )})}
+                                <Paragraph> 
+                                    <Line> <Tags>TIMESTAMP:</Tags> {data.timestamp}</Line>
+                                    <Line> <Tags> HOSPITAL:</Tags> {data.hospital}</Line>
+                                    <Line><Tags>DIAGNOSIS:</Tags>  {data.diagnosis}</Line>
+                                    <Line><Tags>PERSCRIPTION:</Tags>  {data.perscription}</Line>
+                                    <Line><Tags>COMMENT:</Tags>  {data.comment}</Line>
+                                    {/* <Line><Tags>PREVIOUS HASH:</Tags>  {data.previous_hash}</Line>          */}
+                                </Paragraph>
+                            </Blockchain>
+                        )})
+                    }
                 </Modal>
             
                 <BlockchainWrapper>

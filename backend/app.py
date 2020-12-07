@@ -10,7 +10,7 @@ import requests, pymongo, json
 app      = Flask(__name__)
 archive  = Archive()
 node     = Node()
-#protocol = Client()
+# protocol = Client()
 
 #Name Age, BloodType, Alergies
 # @TODO REMOVE THIS SHIT LATER
@@ -52,9 +52,9 @@ def record():
     #setting the block with data
     block = record.new_block(record.hash(record.last_block), data=data)
     #makes the block into a json
-    protocol.set_data = json.dumps(block, sort_keys=False, indent = 2)
+    # protocol.set_data = json.dumps(block, sort_keys=False, indent = 2)
     #brodcasts the block
-    protocol.listen()
+    # protocol.listen()
 
     return jsonify(block), 200
 

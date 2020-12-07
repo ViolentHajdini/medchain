@@ -6,7 +6,9 @@ import { FormWrapper, Select } from '../register/form.elements'
 import { Searchwrapper, Input } from '../Searchbar/searchbar.elements'
 import { Redirect } from "react-router-dom";
 import { Scanner } from "../qrcode/scanner";
+
 const axios = require('axios');
+const crypto = require('crypto');
 
 
 export const Login = props => {
@@ -20,7 +22,14 @@ export const Login = props => {
 
     const handleSubmit = e => {
         e.preventDefault();
-        axios.get(`/search/${opt}/${key}`).then(res => {
+
+        // User submits their public key and checks
+        // for the hashed Pk in the database
+        const hash = crypto.createHash('sha256');
+        hash.update(key.toString('utf8'));
+        const addr = hash.digest('hex');
+        
+        axios.get(`/search/${opt}/${addr}`).then(res => {
             if (res.data.error) { alert(res.data.error); }
             else { setAuth(true); }
         });
@@ -30,7 +39,7 @@ export const Login = props => {
 
     return (
         <Container>
-            { auth === true ? opt === "doctor" ? <Redirect to="/doctor"/> : <Redirect to="/patient/:id"/>: null}
+            { auth === true ? opt === "doctor" ? <Redirect to="/doctor"/> : <Redirect to="/patient/:id"/> : null}
             <Background>
                 <VideoBg autoPlay loop muted src={sample} type='video/mp4' />
             </Background>
