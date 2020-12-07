@@ -93,16 +93,16 @@ def handle_client(Bconn, Baddr, conn, addr, new_client):
 
     connected = True
     while connected:
-        if new_client == True or available(conn) == True:
+        if new_client == True: #or available(conn) == True:
             msg_length = conn.recv(HEADER).decode(FORMAT)
             if msg_length:
                 msg_length = int(msg_length)
                 msg = conn.recv(msg_length).decode(FORMAT)
-            broadcast_msg = json.dumps(msg)
-            broadcast(broadcast_msg)
-            print(f"[{addr}] {msg}")
-            print(CLIENT_LIST)
-            new_client = False
+                broadcast_msg = json.dumps(msg)
+                broadcast(broadcast_msg)
+                print(f"[{addr}] {msg}")
+                print(CLIENT_LIST)
+                new_client = False
 
         else:
                 list_check(Baddr)
@@ -116,19 +116,19 @@ def handle_client(Bconn, Baddr, conn, addr, new_client):
 
 #starts the server and threads
 def start():
-    server.listen(5),
-    broadcast_socket.listen(5),
+    server.listen(),
+    broadcast_socket.listen(),
     print(f"[LISTENING] server is listening on {SERVER}")
     while True:
         conn, addr = server.accept()
         Bconn, Baddr = broadcast_socket.accept()
-        if available(conn) == True:
-            new_client = True
-            thread = threading.Thread(target = handle_client, args = (Bconn, Baddr,conn, addr, new_client))
-            thread.start()
-            clientID = (f"Client {threading.activeCount() - 1 + THREAD_OFFSET}", Bconn, Baddr)
-            CLIENT_LIST.append(clientID)
-            print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 1}")
+        #if available(conn) == True:
+        new_client = True
+        thread = threading.Thread(target = handle_client, args = (Bconn, Baddr,conn, addr, new_client))
+        thread.start()
+        clientID = (f"Client {threading.activeCount() - 1 + THREAD_OFFSET}", Bconn, Baddr)
+        CLIENT_LIST.append(clientID)
+        print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 1}")
 
 
 

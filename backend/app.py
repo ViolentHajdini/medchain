@@ -42,15 +42,19 @@ def deal_with_input(opt, key):
 
 @app.route('/record/new', methods=['POST'])
 def record():
-    values = request.get_json()
-    id = values['id']
-    data = values['data']
+    
+    #values = request.get_json()
+    id = request.json['id']
+    data = request.json['data']
     record = archive.fetch_record(id)
 
+    #setting the block with data
     block = record.new_block(record.hash(record.last_block), data=data)
-    protocol.set_data = json.dumps(block, sort_keys=True)
+    #makes the block into a json
+    protocol.set_data = json.dumps(block, sort_keys=False, indent = 2)
+    #brodcasts the block
     protocol.listen()
-    
+
     return jsonify(block), 200
 
 

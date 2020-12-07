@@ -53,10 +53,7 @@ class Client:
 
 #Sends messages from the client to the server. It also begins the check to see if the server is available
     def send(self, msg):
-        # if check_server(msg,client):
         if self.CONNECTED == True:
-
-
             if self.check_server(msg):
                 if msg != self.DISCONNECT_MESSAGE:
                     user_input = msg.encode(self.FORMAT)
@@ -99,12 +96,14 @@ class Client:
                 data_length = int(data_length)
                 server_data = self.broadcast_socket.recv(data_length).decode(self.FORMAT)
                 print (f"Broadcasted data: {server_data}")
+                return
 
 
 #checks the server for availability
     def check_server(self,msg):
         if msg == self.DISCONNECT_MESSAGE:
             return True
+        print (self.set_data)
         print("syncing with server...")
         send_header = json.loads(self.client_header)
         send_header['syncflag'] = True
