@@ -29,6 +29,11 @@ export const BlockchainWrapper = styled.form`
     align-items: center;
     
 `
+export const ScannerWrapper = styled.div `
+    width: 250px;
+    height: 250px;
+    z-index: 4;
+`
 
 export const InputButton = styled.input`
   width: 300px;
@@ -38,6 +43,7 @@ export const InputButton = styled.input`
   margin: 8px 0;
   border: none;
   border-radius: 4px;
+  margin-top: 60px;
   cursor: pointer;
   &:hover{
     background-color: #00ab65;

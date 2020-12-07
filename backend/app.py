@@ -10,10 +10,11 @@ import requests, pymongo, json
 app      = Flask(__name__)
 archive  = Archive()
 node     = Node()
-protocol = Client()
+#protocol = Client()
 
+#Name Age, BloodType, Alergies
 # @TODO REMOVE THIS SHIT LATER
-chain = Chain(id='cadd75339625c5401af9b5cce0b0d402f56c44891001a885ca93f8f24b48079f')
+chain = Chain(id='cadd75339625c5401af9b5cce0b0d402f56c44891001a885ca93f8f24b48079f', data={"name" : "Ben Dover" , "dob" : "40","bloodType": "A+", "allergies" : "none"})
 chain2 = Chain(id='635f25285d53b1f77690c9382af70d27934057dcb3ad578bc16d406805c028c')
 archive.add_record(chain)
 archive.add_record(chain2)
