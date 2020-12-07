@@ -28,7 +28,7 @@ export const Login = props => {
         hash.update(key.toString('utf8'));
         const addr = hash.digest('hex');
         
-        axios.get(`/search/${opt}/${key}`)
+        axios.get(`/search/${opt}/${addr}`)
         .then(res => {
             setAuth(true);
         })
