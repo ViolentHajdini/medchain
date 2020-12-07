@@ -43,6 +43,7 @@ export const InputButton = styled.input`
   margin: 8px 0;
   border: none;
   border-radius: 4px;
+  margin-top: 60px;
   cursor: pointer;
   &:hover{
     background-color: #00ab65;

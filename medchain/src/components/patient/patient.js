@@ -58,7 +58,7 @@ const Patient = props => {
                     <Tokens>PubKey: {props.id}</Tokens>
                 </InfoWrapper>
                 <QRWrapper>
-                    <QRCode value ={'"pubkey": ' + props.id + ', "sig": 1278172hf1a96'}/> 
+                    <QRCode value ={'{"pubkey": "' + props.id +'" ,"sig": "1278172hf1a96"}'}/> 
                 </QRWrapper>
             </PatientInfo>
             <BlockchainWrapper>

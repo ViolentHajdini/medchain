@@ -3,6 +3,7 @@ import { DoctorBackground, FormWrapper, Blockchain, BlockchainWrapper,CloseIcon,
 import  MedicalForm  from './medicalform';
 import { Input, InputButton } from './find.elements'
 import testjson from './test.json';
+import QrReader from 'react-qr-reader';
 
 
 const Doctor = props => {
@@ -15,27 +16,40 @@ const Doctor = props => {
     const data2 = 'f0a781a8380a89ab8db7a6aade46d63d6d8fffc12af8242fbfb41588481095e5';
     const [stat,setStat]= useState('');
     const [remount,setRemount] = useState(false);
-    
+    const [token, setToken] = useState([]);
+
     useEffect(()=> {
         if (remount && clicked){
             getData();
             setRemount(false);
         }
     });
-    
+
+    const handleScan = data => {
+        if (data) {
+            let temp = JSON.parse(data);
+            setToken([temp.pubkey,temp.sig]);
+            setClicked(true);
+            if(temp.pubkey.length > 0){
+                setKey(temp.pubkey);
+                setRemount(true);
+            }
+            console.log('scanned');
+        }
+      }
+      
+  
+      const handleError = err => {
+        console.error(err);
+      }
    
     const handleRemount = (data) =>{
         setRemount(data);
     }
 
     const handleSubmit = e => {
-        console.log(key);
-
         getData();
-        
-
         e.preventDefault();
-       
     }
 
     const getData = () =>{
@@ -71,7 +85,6 @@ const Doctor = props => {
 
     }
 
-
     const handleChange = (event) =>{
         setKey(event.target.value);
         console.log('change handled');
@@ -79,15 +92,20 @@ const Doctor = props => {
     const closeModal = () =>{
         setKey('');
         setClicked(false);
-        
+        setToken([]);
+    }
+
+    const onlyOneBlock = (data) =>{
+        setClicked(data);
     }
    
     return (
         <DoctorBackground>
                 <FormWrapper>
-                    <MedicalForm handleRemount={handleRemount} />
+                    <MedicalForm onlyOneBlock={onlyOneBlock} check={clicked} pubkey={token[0]} sig={token[1]} handleRemount={handleRemount} />
+                    {console.log(key)}
                 </FormWrapper>
-                <Modal bool={clicked}>
+                <Modal bool={clicked}>  
                     <CloseIcon onClick={closeModal}> X </CloseIcon>
                     {blockchain.map(function(data,index) {
                     return( 
@@ -105,9 +123,17 @@ const Doctor = props => {
                     )})}
                 </Modal>
             
-                <BlockchainWrapper onSubmit={handleSubmit} >
-                    <Input placeholder="ID" value={key} onChange={handleChange}/>
-                    <InputButton type='submit' value="Find Patients Blockchain" />  
+                <BlockchainWrapper>
+                    {/* <Input placeholder="ID" value={key} onChange={handleChange}/>
+                    <InputButton type='submit' value="Find Patients Blockchain" />   */}
+                        {!clicked ? <div style={{height:"300px", width: "300px" }}>
+                            <QrReader
+                                delay={300}
+                                onError={handleError}
+                                onScan={handleScan}
+                                style={{ width: '100%' }}
+                            />
+                        </div> : null}
                 </BlockchainWrapper>
         </DoctorBackground>
     )

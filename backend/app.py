@@ -10,7 +10,7 @@ import requests, pymongo, json
 app      = Flask(__name__)
 archive  = Archive()
 node     = Node()
-protocol = Client()
+#protocol = Client()
 
 #Name Age, BloodType, Alergies
 # @TODO REMOVE THIS SHIT LATER

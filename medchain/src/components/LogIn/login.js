@@ -62,7 +62,7 @@ export const Login = props => {
                 </HeaderbtnWrapper>
                 {/* <QRWrapper>
                     <Scanner/>
-                </QRWrapper> */}
+                </QRWrapper>*/}
             </Content>
         </Container>
     )
