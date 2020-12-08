@@ -14,6 +14,7 @@ const MedicalForm = props => {
     const [diagnosis, setDiagnosis] = useState('');
     const [perscription, setPerscription] = useState('');
     const [comment, setComment] = useState('');
+    const [doctorKey, setDoctorKey] = useState(props.id);
     const [bool, setBool] = useState(true);
     
 
@@ -21,7 +22,10 @@ const MedicalForm = props => {
         if(props.check && bool){ 
            setId(props.pubkey); 
            setBool(false);
-          
+           if( props.id.length !== undefined){
+               setDoctorKey(props.id);
+                console.log('ITS GOING HERE FUCK IT');
+            };
         }
         if(!props.check && !bool ){
             
@@ -29,7 +33,7 @@ const MedicalForm = props => {
             setId('');
         }
     });
-          
+
     const GreenCheckbox = withStyles({
         root: {
           color:"#01bf71",
@@ -37,9 +41,11 @@ const MedicalForm = props => {
         },
       )((props) => <Checkbox color="default" {...props} />);
 
-    console.log(props.pubkey);
-    console.log(props.sig);
+    // console.log(props.pubkey);
+    // console.log(props.sig);
+
     const handleSubmit = e => {
+        console.log("This is the props I wanna pass", doctorKey);
         e.preventDefault();
         axios.post('/record/new', {
             id: id,
@@ -47,7 +53,8 @@ const MedicalForm = props => {
                 hospital: hospital,
                 diagnosis: diagnosis,
                 perscription: perscription,
-                comment: comment
+                comment: comment,
+                doctorkey: doctorKey
             }
         })
         .then(res => {
@@ -59,6 +66,7 @@ const MedicalForm = props => {
             setDiagnosis('');
             setPerscription('');
             setComment('');
+            setDoctorKey('')
             props.handleRemount(true);
             return console.log(res)
         })
