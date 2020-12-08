@@ -29,7 +29,7 @@ const Doctor = props => {
                 setKey(user.pubkey);
                 setRemount(true);
             }
-                console.log('scanned');
+            console.log('scanned');
         }
       }
       
