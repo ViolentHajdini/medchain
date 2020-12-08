@@ -11,7 +11,6 @@ export const Scanner = () => {
         console.log(token);
       }
     }
-    
 
     const handleError = err => {
       console.error(err);
@@ -25,7 +24,6 @@ export const Scanner = () => {
             onScan={handleScan}
             style={{ width: '100%' }}
         />
-
     </div>
     )
   }

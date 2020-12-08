@@ -1,6 +1,7 @@
 import socket
 import threading
 import json
+from app import archive 
 #The Globals needed to run server
 #Bport refers to the Broadcasting port
 #this needed a seperate port as to not conflict with the message sending on the main port
@@ -98,11 +99,11 @@ def handle_client(Bconn, Baddr, conn, addr, new_client):
             if msg_length:
                 msg_length = int(msg_length)
                 msg = conn.recv(msg_length).decode(FORMAT)
-                broadcast_msg = json.dumps(msg)
-                broadcast(broadcast_msg)
-                print(f"[{addr}] {msg}")
-                print(CLIENT_LIST)
-                new_client = False
+            broadcast_msg = json.dumps(msg)
+            broadcast(broadcast_msg)
+            print(f"[{addr}] {msg}")
+            print(CLIENT_LIST)
+            new_client = False
 
         else:
                 list_check(Baddr)
@@ -129,6 +130,10 @@ def start():
             clientID = (f"Client {threading.activeCount() - 1 + THREAD_OFFSET}", Bconn, Baddr)
             CLIENT_LIST.append(clientID)
             print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 1}")
+        else:
+            print ("Immediate Disconnect by client")
+            conn.close()
+            Bconn.close()
 
 
 

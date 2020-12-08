@@ -5,12 +5,11 @@ from client import Client
 import requests, pymongo, json
 #from jsonsocketclient import sendJ
 
-
 # Instantiate the Node
 app      = Flask(__name__)
 archive  = Archive()
 node     = Node()
-# protocol = Client()
+protocol = Client()
 
 #Name Age, BloodType, Alergies
 # @TODO REMOVE THIS SHIT LATER
@@ -43,7 +42,14 @@ def deal_with_input(opt, key):
 
 @app.route('/record/new', methods=['POST'])
 def record():
-    
+
+    flags_and_block = [{
+        "send": True,
+        "Disconnect": False,
+        "NEW_BLOCK": False,
+        "NEW_BLOCK": False
+    }]
+
     #values = request.get_json()
     id = request.json['id']
     data = request.json['data']
@@ -52,9 +58,10 @@ def record():
     #setting the block with data
     block = record.new_block(record.hash(record.last_block), data=data)
     #makes the block into a json
-    # protocol.set_data = json.dumps(block, sort_keys=False, indent = 2)
+    flags_and_block.append(block)
+    protocol.set_data(json.dumps(flags_and_block, sort_keys=False, indent = 2))
     #brodcasts the block
-    # protocol.listen()
+    protocol.activate()
 
     return jsonify(block), 200
 
