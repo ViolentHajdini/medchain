@@ -14,8 +14,8 @@ node     = Node()
 
 #Name Age, BloodType, Alergies
 # @TODO REMOVE THIS SHIT LATER
-chain = Chain(id='3076301006072a8648ce3d020106052b8104002203620004c9f62827303857bfabdd6510dc43cb96d3c26d4533ea7a372d2e452f6e609d8074c7de1ae24298235ed7f26e753390c50bc854c18a7cab33598693bc3d9714087658c7859fcf5ee2d2c3796988399ebf653f2dd7aa913f0fb675eda6cff74a13', data={"name" : "Ben" , "dob" : "40","bloodType": "A+", "allergies" : "none", "doctorkey" : ""})
-chain2 = Chain(id='3076301006072a8648ce3d020106052b8104002203620004f7454c81ef41950e6d56cb14a983b61720ec4d8943feee89d7e3a1e2384ab819ed5ffa180226e3c41a84a69810179a80c3738415e4ff8ff6be51c63f75f0ddb71c53c4fb4718409c067814a7d054e1faed5e30a8b6a87d5d5e9c088ea662fac8', data={"name" : "Ana" , "dob" : "21","bloodType": "B+", "allergies" : "none", "doctorkey" : ""})
+chain = Chain(id='cadd75339625c5401af9b5cce0b0d402f56c44891001a885ca93f8f24b48079f', data={"name" : "Ben Dover" , "dob" : "40","bloodType": "A+", "allergies" : "none"})
+chain2 = Chain(id='635f25285d53b1f77690c9382af70d27934057dcb3ad578bc16d406805c028c')
 archive.add_record(chain)
 archive.add_record(chain2)
 
