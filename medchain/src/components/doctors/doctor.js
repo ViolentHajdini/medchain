@@ -23,7 +23,7 @@ const Doctor = props => {
     const handleScan = data => {
         if (data) {
             let user = JSON.parse(data);
-            setToken([user.pubkey,user.sig,props.id]);
+            setToken([user.pubkey,user.sig]);
             setClicked(true);
             if(user.pubkey.length > 0){
                 setKey(user.pubkey);
