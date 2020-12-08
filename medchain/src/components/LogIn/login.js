@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import { Container, HeaderbtnWrapper, Logo, LogoContainer, VideoBg, Background, Content} from './login.elements';
+import { Container, HeaderbtnWrapper, Logo, LogoContainer, VideoBg, Background, Content ,QRWrapper} from './login.elements';
 import sample from '../../video/video.mp4';
 import { Button } from './ButtonElement'
 import { FormWrapper, Select } from '../register/form.elements'
@@ -21,20 +21,18 @@ export const Login = props => {
 
     const handleSubmit = e => {
         e.preventDefault();
-
+        // .catch(()=>{
+        //     alert("ID does not match any in the database");
+        // })
         // User submits their public key and checks
         // for the hashed Pk in the database
         const hash = crypto.createHash('sha256');
         hash.update(key.toString('utf8'));
         const addr = hash.digest('hex');
         
-        axios.get(`/search/${opt}/${addr}`)
-        .then(res => {
-            setAuth(true);
-        })
-        .catch((error) => {
-            console.error('Error: ', error);
-            alert('Key does not exist in the Database');
+        axios.get(`/search/${opt}/${addr}`).then(res => {
+            if (res.data.error) { alert(res.data.error); }
+            else { setAuth(true); }
         });
         props.handleAlter(key);
     }

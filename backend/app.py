@@ -5,16 +5,17 @@ from client import Client
 import requests, pymongo, json
 #from jsonsocketclient import sendJ
 
+
 # Instantiate the Node
 app      = Flask(__name__)
 archive  = Archive()
 node     = Node()
-protocol = Client()
+# protocol = Client()
 
 #Name Age, BloodType, Alergies
 # @TODO REMOVE THIS SHIT LATER
 chain = Chain(id='3076301006072a8648ce3d020106052b8104002203620004c9f62827303857bfabdd6510dc43cb96d3c26d4533ea7a372d2e452f6e609d8074c7de1ae24298235ed7f26e753390c50bc854c18a7cab33598693bc3d9714087658c7859fcf5ee2d2c3796988399ebf653f2dd7aa913f0fb675eda6cff74a13', data={"name" : "Ben" , "dob" : "40","bloodType": "A+", "allergies" : "none", "doctorkey" : ""})
-chain2 = Chain(id='3076301006072a8648ce3d020106052b8104002203620004f7454c81ef41950e6d56cb14a983b61720ec4d8943feee89d7e3a1e2384ab819ed5ffa180226e3c41a84a69810179a80c3738415e4ff8ff6be51c63f75f0ddb71c53c4fb4718409c067814a7d054e1faed5e30a8b6a87d5d5e9c088ea662fac8', data={"name" : "Ana" , "dob" : "21","bloodType": "B-", "allergies" : "none", "doctorkey" : ""})
+chain2 = Chain(id='3076301006072a8648ce3d020106052b8104002203620004f7454c81ef41950e6d56cb14a983b61720ec4d8943feee89d7e3a1e2384ab819ed5ffa180226e3c41a84a69810179a80c3738415e4ff8ff6be51c63f75f0ddb71c53c4fb4718409c067814a7d054e1faed5e30a8b6a87d5d5e9c088ea662fac8', data={"name" : "Ana" , "dob" : "21","bloodType": "B+", "allergies" : "none", "doctorkey" : ""})
 archive.add_record(chain)
 archive.add_record(chain2)
 
@@ -42,14 +43,7 @@ def deal_with_input(opt, key):
 
 @app.route('/record/new', methods=['POST'])
 def record():
-
-    flags_and_block = [{
-        "send": True,
-        "Disconnect": False,
-        "NEW_BLOCK": False,
-        "NEW_BLOCK": False
-    }]
-
+    
     #values = request.get_json()
     id = request.json['id']
     data = request.json['data']
@@ -58,10 +52,9 @@ def record():
     #setting the block with data
     block = record.new_block(record.hash(record.last_block), data=data)
     #makes the block into a json
-    flags_and_block.append(block)
-    protocol.set_data(json.dumps(flags_and_block, sort_keys=False, indent = 2))
+    # protocol.set_data = json.dumps(block, sort_keys=False, indent = 2)
     #brodcasts the block
-    protocol.activate()
+    # protocol.listen()
 
     return jsonify(block), 200
 

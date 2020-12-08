@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import token from '../../media/blocksvg.svg'
-import photo from '../../media/photo.png'
 
 export const PatientBackground = styled.div`
     background: #EFEFE8FF;
