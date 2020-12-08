@@ -5,14 +5,13 @@ import QrReader from 'react-qr-reader';
 
 
 const Doctor = props => {
-    
+
+    console.log(props.id);
     const [key, setKey] = useState('');
     const [blockchain,setBlockchain] = useState([]);
     const [clicked, setClicked] = useState(false);
     const [remount,setRemount] = useState(false);
     const [token, setToken] = useState([]);
-    const [id,setId] = useState(props.id); 
-    console.log(id);
 
     useEffect(()=> {
         if (remount && clicked){
@@ -31,10 +30,10 @@ const Doctor = props => {
                 setRemount(true);
             }
             console.log('scanned');
-        } 
+        }
       }
       
-
+  
     const handleError = err => {
         console.error(err);
     }
@@ -84,7 +83,7 @@ const Doctor = props => {
     return (
         <DoctorBackground>
                 <FormWrapper>
-                    <MedicalForm onlyOneBlock={onlyOneBlock} check={clicked} pubkey={token[0]} sig={token[1]} id={token[2]} handleRemount={handleRemount} />
+                    <MedicalForm onlyOneBlock={onlyOneBlock} check={clicked} pubkey={token[0]} sig={token[1]} handleRemount={handleRemount} />
                 </FormWrapper>
                 <Modal bool={clicked}>  
                     <CloseIcon onClick={closeModal}> X </CloseIcon>
@@ -99,7 +98,6 @@ const Doctor = props => {
                                     <Line><Tags>DIAGNOSIS:</Tags>  {data.diagnosis}</Line>
                                     <Line><Tags>PERSCRIPTION:</Tags>  {data.perscription}</Line>
                                     <Line><Tags>COMMENT:</Tags>  {data.comment}</Line>
-                                    <Line><Tags>DOCTORS KEY</Tags> {data.doctorkey} </Line>
                                 </Paragraph>
                             </Blockchain>
                         )})
