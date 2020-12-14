@@ -1,3 +1,12 @@
+"""
+The main Chain class, this represents an individual
+blockchain that is flexible with the data it can take
+and is built in with hashing functions that handle
+the blockchain functionality. All the data that can be added
+to the blocks themselves is arbitrary and has a flexible
+amount of use cases.
+"""
+
 import hashlib
 import json
 from os import urandom
@@ -9,6 +18,14 @@ from cryptography.hazmat.primitives.asymmetric import ec
 
 class Chain:
     def __init__(self, id=None, data=None, exported=None):
+        """
+        Chain constructor
+
+            id: any -> gives the blockchain a unique id
+            data: dict -> data you would like to put into the genesis block
+            exported: dict -> if the chain already exists you can import the genesis block
+        """
+        
         self._chain = []
 
         # Since multiple blockchains are used there
@@ -23,6 +40,13 @@ class Chain:
             self.new_block(previous_hash=1, data=data)
     
     def new_block(self, previous_hash, data=None):
+        """
+        Create a new block in the chain
+
+            previous_hash: hex -> a hashed value of the previous block in the chain
+            data: dict -> extra data to be added into the block (can literally be anything)
+        """
+        
         # Basic header for any block
         block = {
             'index': len(self._chain) + 1,
@@ -37,35 +61,50 @@ class Chain:
         self._chain.append(block)
         return block
 
- 
     def print_chain(self):
+        """
+        Prints the contents of the chain
+        """ 
         print('============================')
         for block in self._chain:
             print(json.dumps(block, indent=4))
             print('============================')
 
-
     @property
     def last_block(self):
-        return self._chain[-1]
+        """
+        Retrieves the last block of the chain
 
+            return: dict -> the last block dictionary
+        """
+
+        return self._chain[-1]
 
     @property
     def chain(self):
-        return self._chain
+        """
+        Retrieves the chain as an array
 
+            return: dict[] -> array of dictionaries (blocks)
+        """
+        return self._chain
 
     @staticmethod
     def hash(block):
+        """
+        Helper method for returning a hash of a block
+
+            return: hex -> a hashed value for a given block 
+        """
         block_string = json.dumps(block, sort_keys=True).encode()
         return hashlib.sha256(block_string).hexdigest()
 
-
     def valid_chain(self, chain):
         """
-        Determine if a given blockchain is valid
-        :param chain: A blockchain
-        :return: True if valid, False if not
+        Determines if a chain is valid
+
+            chain: Chain -> the given chain
+            return: bool -> validity of the chain
         """
 
         last_block = chain[0]
@@ -86,6 +125,12 @@ class Chain:
 
     @staticmethod
     def chain_hash(chain):
+        """
+        Create a hash of the entire blockchain
+
+        chain: [] -> the raw chain as an array of dicts
+        return: hex -> the hashed value of the entire blockchain
+        """
         chain_hash = hashes.Hash(hashes.SHA256())
 
         for block in chain:
@@ -94,41 +139,11 @@ class Chain:
 
         return chain_hash.finalize().hex()
 
-    def resolve_conflicts(self, compare_chain, node_object, signature, pubkey):
-        """
-        This is our consensus algorithm, it resolves conflicts
-        by replacing our chain with the longest one in the network.
-        :return: True if our chain was replaced, False if not
-        """
-        neighbors = node_object.get_neighbors()
-        new_chain = None
-
-        # We're only looking for chains longer than ours
-        max_length = len(self._chain)
-
-        # Grab and verify the chains from all the nodes in our network
-        length = len(compare_chain)
-        signature = bytes.fromhex(signature)
-        public_key = serialization.load_der_public_key(bytes.fromhex(pubkey))
-
-        try:
-            hash_check = bytes.fromhex(self.chain_hash(chain))
-            public_key.verify(signature, hash_check, ec.ECDSA(hashes.SHA256()))
-        except:
-            return False
-
-        # Check if the length is longer and the chain is valid
-        if length > max_length and self.valid_chain(chain):
-            max_length = length
-            new_chain = compare_chain
-
-        # Replace our chain if we discovered a new, valid chain longer than ours
-        if new_chain:
-            self._chain = new_chain
-            return True
-
-        return False
-
+"""
+The Node class that represents the identity of the server
+running this code. It is equipped with a keypair for signing
+transactions and functions for creating and verifying blocks.
+"""
 
 class Node:
     def __init__(self):
@@ -139,6 +154,11 @@ class Node:
         self._private_key = ec.derive_private_key(self._wallet_seed, ec.SECP384R1())
 
     def register_node(self, address):
+        """
+        Register another node on the network to be aware of
+
+            address: string -> address of the node on the network
+        """
         parsed_url = urlparse(address)
         if parsed_url.netloc:
             self.neighbors.add(parsed_url.netloc)
@@ -149,9 +169,20 @@ class Node:
             raise ValueError('Invalid URL')
 
     def get_neighbors(self):
+        """
+        Return the array of neighbors in the network
+
+        return: [] -> array of IP addresses
+        """
         return self.neighbors
 
     def generate_signature(self, data):
+        """
+        Sign a cryptographic message on given data
+
+            data: string -> the data to be signed
+            return: hex -> the signature
+        """
         hash = bytes.fromhex(data)
 
         signature = self._private_key.sign(
@@ -162,6 +193,11 @@ class Node:
         return signature.hex()
 
     def generate_transaction_addr(self):
+        """
+        Generate this node's transaction address and corresponding public key
+
+            return: Tuple -> (address: hex, pubkey: hex)
+        """
         public_key = self._private_key.public_key()
         serialized_public_key = public_key.public_bytes(
             encoding=serialization.Encoding.DER,
@@ -176,6 +212,13 @@ class Node:
         return (address, encoded_key)
 
     def verify_addr(self, addr, pubkey):
+        """
+        Verify that a given address actually belongs to the user
+
+            addr: hex -> the given address
+            pubkey: hex -> the pubkey corresponding to the addr
+            return: bool -> whether or not the key was verified
+        """
         # Regenerate the given addresses
         address = hashes.Hash(hashes.SHA256())
         sender_public_bytes = bytes.fromhex(pubkey)
@@ -188,6 +231,12 @@ class Node:
             return False
 
     def verify_block(self, block):
+        """
+        Verify that a block is valid and eligble to be put into the chain
+
+            block: dict -> the block to be judged
+            return: bool -> if the block was verified
+        """
         txsig = bytes.fromhex(block.get('txsig'))
         pubkey = serialization.load_der_public_key(bytes.fromhex(block.get('pubkey')))
         try:

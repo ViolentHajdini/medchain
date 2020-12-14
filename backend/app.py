@@ -3,26 +3,21 @@ from archive import Archive
 from blockchain import Chain, Node
 from client import Client
 import requests, pymongo, json
-#from jsonsocketclient import sendJ
-
 
 # Instantiate the Node
 app      = Flask(__name__)
 archive  = Archive()
 node     = Node()
-# protocol = Client()
-
-#Name Age, BloodType, Alergies
-# @TODO REMOVE THIS SHIT LATER
-chain = Chain(id='cadd75339625c5401af9b5cce0b0d402f56c44891001a885ca93f8f24b48079f', data={"name" : "Ben Dover" , "dob" : "40","bloodType": "A+", "allergies" : "none"})
-chain2 = Chain(id='635f25285d53b1f77690c9382af70d27934057dcb3ad578bc16d406805c028c')
-archive.add_record(chain)
-archive.add_record(chain2)
+protocol = Client()
 
 DB_KEY = "mongodb+srv://dave:dave@cluster0.sj9u0.mongodb.net/user?retryWrites=true&w=majority"
 client = pymongo.MongoClient(DB_KEY)
 db = client.user
 
+
+"""
+A route for verifying that an address/pubkey is authorized to use the platform
+"""
 @app.route('/search/<opt>/<key>', methods=['GET'])
 def deal_with_input(opt, key):
     if opt == 'patient':
@@ -40,26 +35,24 @@ def deal_with_input(opt, key):
         'address': res['address']
     }), 200
 
-
+"""
+A route for creating a new patient record on the platform
+"""
 @app.route('/record/new', methods=['POST'])
 def record():
-    
-    #values = request.get_json()
     id = request.json['id']
     data = request.json['data']
     record = archive.fetch_record(id)
 
     #setting the block with data
     block = record.new_block(record.hash(record.last_block), data=data)
-    #makes the block into a json
-    # protocol.set_data = json.dumps(block, sort_keys=False, indent = 2)
-    #brodcasts the block
-    # protocol.listen()
 
     return jsonify(block), 200
 
 
-
+"""
+Retrieves the record of a specific patient given their id
+"""
 @app.route('/record/chain/<id>', methods=['GET'])
 def book_chain(id):
     return jsonify(archive.fetch_record(id).chain), 200
