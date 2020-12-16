@@ -22,7 +22,6 @@ export const BlockchainWrapper = styled.form`
     width: 45vw;
     height: auto;
     overflow-y:scroll;
-    overflow-x:hidden;
     background :#EFEFE8FF;
     display: flex;
     flex-direction: column;

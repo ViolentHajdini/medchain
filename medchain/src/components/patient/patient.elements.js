@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import token from '../../media/blocksvg.svg'
+import photo from '../../media/photo.png'
 
 export const PatientBackground = styled.div`
     background: #EFEFE8FF;
@@ -86,4 +87,14 @@ export const InfoWrapper = styled.div`
 export const Blockchain = styled.div `
     height: 100px;
     width: 100px;   
+`
+
+export const Tokens = styled.h1 `
+    font-size: 15px;
+    word-wrap: break-word;
+    width: 400px;
+    height: max-content;
+    margin: 5px;
+    color: #495464;
+    padding-top: 10px;
 `

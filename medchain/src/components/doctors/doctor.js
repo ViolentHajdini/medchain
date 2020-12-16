@@ -12,18 +12,22 @@ const Doctor = props => {
     const [clicked, setClicked] = useState(false);
     const [remount,setRemount] = useState(false);
     const [token, setToken] = useState([]);
+    const [id, setId]= useState(props.id);
+    const [gen,setGen] = useState(true);
 
     useEffect(()=> {
         if (remount && clicked){
             getData();
             setRemount(false);
+            setId(props.id);
+
         }
     });
 
     const handleScan = data => {
         if (data) {
             let user = JSON.parse(data);
-            setToken([user.pubkey,user.sig]);
+            setToken([user.pubkey,user.sig, props.id]);
             setClicked(true);
             if(user.pubkey.length > 0){
                 setKey(user.pubkey);
@@ -83,21 +87,24 @@ const Doctor = props => {
     return (
         <DoctorBackground>
                 <FormWrapper>
-                    <MedicalForm onlyOneBlock={onlyOneBlock} check={clicked} pubkey={token[0]} sig={token[1]} handleRemount={handleRemount} />
+                    <MedicalForm {...props} onlyOneBlock={onlyOneBlock} check={clicked} pubkey={token[0]} sig={token[1]} id={id} handleRemount={handleRemount} />
                 </FormWrapper>
                 <Modal bool={clicked}>  
                     <CloseIcon onClick={closeModal}> X </CloseIcon>
                     {
                     blockchain.map((data, index) => {
+                       
                         return( 
                         <Blockchain key={index}> 
                                 <Line>Record: {data.index}</Line> 
                                 <Paragraph> 
+                                    {index == 0 ? <Line> <Tags>NAME:</Tags> {data.name}</Line> : <null/>}
                                     <Line> <Tags>TIMESTAMP:</Tags> {data.timestamp}</Line>
                                     <Line> <Tags> HOSPITAL:</Tags> {data.hospital}</Line>
                                     <Line><Tags>DIAGNOSIS:</Tags>  {data.diagnosis}</Line>
                                     <Line><Tags>PERSCRIPTION:</Tags>  {data.perscription}</Line>
                                     <Line><Tags>COMMENT:</Tags>  {data.comment}</Line>
+                                    <Line><Tags>DOCTORS PUBLIC KEY:</Tags> {data.doctorkey}  </Line>
                                 </Paragraph>
                             </Blockchain>
                         )})

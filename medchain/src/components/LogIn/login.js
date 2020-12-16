@@ -21,9 +21,7 @@ export const Login = props => {
 
     const handleSubmit = e => {
         e.preventDefault();
-        // .catch(()=>{
-        //     alert("ID does not match any in the database");
-        // })
+
         // User submits their public key and checks
         // for the hashed Pk in the database
         const hash = crypto.createHash('sha256');
@@ -33,6 +31,10 @@ export const Login = props => {
         axios.get(`/search/${opt}/${addr}`).then(res => {
             if (res.data.error) { alert(res.data.error); }
             else { setAuth(true); }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+            alert("This key is not found in the database");
         });
         props.handleAlter(key);
     }

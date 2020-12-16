@@ -15,10 +15,12 @@ const MedicalForm = props => {
     const [perscription, setPerscription] = useState('');
     const [comment, setComment] = useState('');
     const [bool, setBool] = useState(true);
+    const [temp,setTemp] = useState('');
     
-
+    console.log('HERE!',props.id);
     useEffect(()=>{
         if(props.check && bool){ 
+            setTemp(props.id);
            setId(props.pubkey); 
            setBool(false);
           
@@ -47,7 +49,8 @@ const MedicalForm = props => {
                 hospital: hospital,
                 diagnosis: diagnosis,
                 perscription: perscription,
-                comment: comment
+                comment: comment,
+                doctorkey: temp
             }
         })
         .then(res => {
@@ -73,6 +76,7 @@ const MedicalForm = props => {
             <Form onSubmit={handleSubmit}>
                 <h1 style={{color:'#00ab65'}}> Medical Form </h1>
                 <InputWrapperOne>
+                    
                     <Inputs disabled={props.check} value={id} placeholder="ID" onChange={e => setId(e.target.value)} />
                     <Inputs value={hospital} placeholder="Hospital this block was issued from" onChange={e => setHospital(e.target.value)} /> 
                 </InputWrapperOne>
