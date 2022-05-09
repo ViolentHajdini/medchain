@@ -16,7 +16,7 @@ chain2 = Chain(id='3076301006072a8648ce3d020106052b8104002203620004f7454c81ef419
 archive.add_record(chain)
 archive.add_record(chain2)
 
-DB_KEY = "mongodb+srv://dave:dave@cluster0.sj9u0.mongodb.net/user?retryWrites=true&w=majority"
+DB_KEY = "mongodb+srv://medchain:<password>@cluster0.tji1t.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
 client = pymongo.MongoClient(DB_KEY)
 db = client.user
 
