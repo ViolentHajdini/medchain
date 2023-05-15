@@ -17,8 +17,6 @@ DB_KEY = os.getenv('MONGO_DB_KEY')
 client = pymongo.MongoClient(DB_KEY)
 db = client.medchain
 
-
-
 """
 Get an entire archive's last block
 """
@@ -26,6 +24,7 @@ Get an entire archive's last block
 def getArchive(id):
     rec = archive.fetch_record(int(id))
     return jsonify(rec.last_block), 200
+
 
 """
 A route for creating a signature
@@ -58,9 +57,7 @@ def createArchive():
     }
     db.patient.insert_one(obj)
 
-    return jsonify(a, _data), 200
-
-
+    return jsonify(obj), 200
 
 
 """
@@ -79,6 +76,7 @@ def createDoctorProfile():
     }
     db.doc.insert_one(obj)
     return jsonify(a, _data), 200
+
 
 """
 A route for verifying that an address/pubkey is authorized to use the platform
@@ -100,6 +98,7 @@ def deal_with_input(opt, key):
         'address': res['id']
     }), 200
 
+
 """
 A route for creating a new patient record on the platform
 """
@@ -113,6 +112,7 @@ def record():
     block = record.new_block(record.hash(record.last_block), data=data)
 
     return jsonify(block), 200
+
 
 """
 Retrieves the record of a specific patient given their id
