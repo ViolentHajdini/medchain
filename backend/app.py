@@ -7,6 +7,9 @@ import requests, pymongo, json, os
 
 load_dotenv()
 
+HOST_NAME = '127.0.0.1'
+PORT      = 4242
+
 # Instantiate the Node
 app      = Flask(__name__)
 archive  = Archive()
@@ -22,7 +25,8 @@ Get an entire archive's last block
 """
 @app.route('/archive/get/<id>', methods=['GET'])
 def getArchive(id):
-    rec = archive.fetch_record(int(id))
+    print(archive._archive[0].id)
+    rec = archive.fetch_record(id)
     return jsonify(rec.last_block), 200
 
 
@@ -55,7 +59,7 @@ def createArchive():
         'bloodType' : token.chain[0]['bloodType'],
         'allergies' : token.chain[0]['allergies'],
     }
-    db.patient.insert_one(obj)
+    # db.patient.insert_one(obj)
 
     return jsonify(obj), 200
 
@@ -123,6 +127,24 @@ def book_chain(id):
     print("ID returned", archive.print_records())
     return jsonify(archive.fetch_record(id).chain), 200
 
+#
+# P2P Endpoints
+#
+
+"""
+Add a node as a neighbor and send
+"""
+@app.route('/node/register', methods=['POST'])
+def registerNode():
+    ip = request.json['ip']  # List of IP addresses, ex. 127.0.0.1:5000
+    FULL_HOST_NAME = HOST_NAME + ':' + PORT
+    for i in ip:
+        # Register the node and sends identity to neighbors
+        node.register_node(i)
+        requests.post(i + '/node/register', data={'ip': [FULL_HOST_NAME]})
+
+    # Return list of this node's neighbors
+    return jsonify({'neighbors': list(node.get_neighbors())}), 200
 
 if __name__ == '__main__':
     from argparse import ArgumentParser
@@ -131,6 +153,6 @@ if __name__ == '__main__':
     parser.add_argument('-p', '--port', default=4242,
                         type=int, help='port to listen on')
     args = parser.parse_args()
-    port = args.port
+    PORT = args.port
 
-    app.run(host='127.0.0.1', port=port, debug=True)
+    app.run(host=HOST_NAME, port=PORT, debug=True)
