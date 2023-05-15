@@ -59,7 +59,7 @@ def createArchive():
         'bloodType' : token.chain[0]['bloodType'],
         'allergies' : token.chain[0]['allergies'],
     }
-    # db.patient.insert_one(obj)
+    db.patient.insert_one(obj)
 
     return jsonify(obj), 200
 
@@ -137,11 +137,14 @@ Add a node as a neighbor and send
 @app.route('/node/register', methods=['POST'])
 def registerNode():
     ip = request.json['ip']  # List of IP addresses, ex. 127.0.0.1:5000
-    FULL_HOST_NAME = HOST_NAME + ':' + PORT
+    FULL_HOST_NAME = HOST_NAME + ':' + str(PORT)
     for i in ip:
         # Register the node and sends identity to neighbors
         node.register_node(i)
-        requests.post(i + '/node/register', data={'ip': [FULL_HOST_NAME]})
+        try:
+            requests.post(i + '/node/register', json={'ip': [FULL_HOST_NAME]})
+        except:
+            print('ERROR: Could not send identity to node:', i)
 
     # Return list of this node's neighbors
     return jsonify({'neighbors': list(node.get_neighbors())}), 200
