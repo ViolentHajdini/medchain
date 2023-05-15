@@ -17,15 +17,7 @@ DB_KEY = os.getenv('MONGO_DB_KEY')
 client = pymongo.MongoClient(DB_KEY)
 db = client.medchain
 
-"""
-Create an archive
-"""
-@app.route('/archive/create', methods=['POST'])
-def createArchive():
-    _id = request.json.get('id')
-    _data = request.json.get('data')
-    archive.add_record(Chain(id=int(_id), data=_data))
-    return jsonify(_data), 200
+
 
 """
 Get an entire archive's last block
@@ -44,6 +36,50 @@ def createAccount():
     (a, k) = node.generate_transaction_addr()
     return jsonify({'address': a, 'pubkey': k.decode('utf-8'), 'seed': node._wallet_seed}), 200
 
+
+"""
+Create an archive
+"""
+@app.route('/archive/create/patient', methods=['POST'])
+def createArchive():
+    _data = request.json.get('data')
+    node = Node()
+    #a = address, k = pubkey
+    (a, k) = node.generate_transaction_addr()
+
+    token = Chain(id=a, data=_data)
+    archive.add_record(token)
+    obj = {
+        'id' : token.id,
+        'name': token.chain[0]['name'],
+        'dob' : token.chain[0]['dob'],
+        'bloodType' : token.chain[0]['bloodType'],
+        'allergies' : token.chain[0]['allergies'],
+    }
+    db.patient.insert_one(obj)
+
+    return jsonify(a, _data), 200
+
+
+
+
+"""
+Create a profile for doctor
+"""
+@app.route('/archive/create/doctor', methods=['POST'])
+def createDoctorProfile():
+    _data = request.json.get('data')
+    node = Node()
+    #a = address, k = pubkey
+    (a, k) = node.generate_transaction_addr()
+
+    obj = {
+        'id' : a,
+        'name': _data['name'],
+    }
+    db.doc.insert_one(obj)
+    return jsonify(a, _data), 200
+
 """
 A route for verifying that an address/pubkey is authorized to use the platform
 """
@@ -51,17 +87,17 @@ A route for verifying that an address/pubkey is authorized to use the platform
 def deal_with_input(opt, key):
     if opt == 'patient':
         patients = db.patient
-        res = patients.find_one({'address': key})
+        res = patients.find_one({'id': key})
     else:
         doctors = db.doc
-        res = doctors.find_one({'address': key})
+        res = doctors.find_one({'id': key})
 
     if not res:
         return jsonify({'error': 'This address does not exist.'}), 404
 
     return jsonify({
         'name': res['name'],
-        'address': res['address']
+        'address': res['id']
     }), 200
 
 """
@@ -83,6 +119,8 @@ Retrieves the record of a specific patient given their id
 """
 @app.route('/record/chain/<id>', methods=['GET'])
 def book_chain(id):
+    print("ID being passed: ", id)
+    print("ID returned", archive.print_records())
     return jsonify(archive.fetch_record(id).chain), 200
 
 

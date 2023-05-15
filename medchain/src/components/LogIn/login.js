@@ -24,11 +24,12 @@ export const Login = props => {
 
         // User submits their public key and checks
         // for the hashed Pk in the database
-        const hash = crypto.createHash('sha256');
-        hash.update(key.toString('utf8'));
-        const addr = hash.digest('hex');
-        
-        axios.get(`/search/${opt}/${addr}`).then(res => {
+        // const hash = crypto.createHash('sha256');
+        // hash.update(key.toString('utf8'));
+        // const addr = hash.digest('hex');
+
+        axios.get(`/search/${opt}/${key}`).then(res => {
+            console.log(res.data)
             if (res.data.error) { alert(res.data.error); }
             else { setAuth(true); }
         })
