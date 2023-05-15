@@ -2,7 +2,7 @@ from flask import Flask, jsonify, request
 from archive import Archive
 from blockchain import Chain, Node
 from client import Client
-import requests, pymongo, json
+import requests, pymongo, json, os
 
 # Instantiate the Node
 app      = Flask(__name__)
@@ -10,7 +10,7 @@ archive  = Archive()
 node     = Node()
 # protocol = Client()
 
-DB_KEY = "mongodb+srv://medchain:medchain123@cluster0.yz7pqrw.mongodb.net/?retryWrites=true&w=majority"
+DB_KEY = os.getenv('MONGO_DB_KEY')
 client = pymongo.MongoClient(DB_KEY)
 db = client.user
 
