@@ -25,7 +25,7 @@ class Chain:
             data: dict -> data you would like to put into the genesis block
             exported: dict -> if the chain already exists you can import the genesis block
         """
-        
+
         self._chain = []
 
         # Since multiple blockchains are used there
@@ -38,7 +38,7 @@ class Chain:
             self._chain.append(exported)
         else:
             self.new_block(previous_hash=1, data=data)
-    
+
     def new_block(self, previous_hash, data=None):
         """
         Create a new block in the chain
@@ -46,7 +46,7 @@ class Chain:
             previous_hash: hex -> a hashed value of the previous block in the chain
             data: dict -> extra data to be added into the block (can literally be anything)
         """
-        
+
         # Basic header for any block
         block = {
             'index': len(self._chain) + 1,
@@ -57,14 +57,14 @@ class Chain:
         # Ugly syntax for merging two dictionaries
         if data:
             block = {**block, **data}
-        
+
         self._chain.append(block)
         return block
 
     def print_chain(self):
         """
         Prints the contents of the chain
-        """ 
+        """
         print('============================')
         for block in self._chain:
             print(json.dumps(block, indent=4))
@@ -94,7 +94,7 @@ class Chain:
         """
         Helper method for returning a hash of a block
 
-            return: hex -> a hashed value for a given block 
+            return: hex -> a hashed value for a given block
         """
         block_string = json.dumps(block, sort_keys=True).encode()
         return hashlib.sha256(block_string).hexdigest()

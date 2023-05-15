@@ -1,3 +1,11 @@
+.vscode
+Pipfile.lock
+debug.log
+package-lock.json
+
+medchain/.eslintcache
+medchain/.eslintcache
+medchain/package-lock.json
+
 node_modules
-medchain/.eslintcache
-medchain/.eslintcache
+__pycache__

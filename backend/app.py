@@ -10,16 +10,36 @@ archive  = Archive()
 node     = Node()
 # protocol = Client()
 
-#Name Age, BloodType, Alergies
-chain = Chain(id='3076301006072a8648ce3d020106052b8104002203620004c9f62827303857bfabdd6510dc43cb96d3c26d4533ea7a372d2e452f6e609d8074c7de1ae24298235ed7f26e753390c50bc854c18a7cab33598693bc3d9714087658c7859fcf5ee2d2c3796988399ebf653f2dd7aa913f0fb675eda6cff74a13', data={"name" : "Ben" , "dob" : "40","bloodType": "A+", "allergies" : "none", "doctorkey" : ""})
-chain2 = Chain(id='3076301006072a8648ce3d020106052b8104002203620004f7454c81ef41950e6d56cb14a983b61720ec4d8943feee89d7e3a1e2384ab819ed5ffa180226e3c41a84a69810179a80c3738415e4ff8ff6be51c63f75f0ddb71c53c4fb4718409c067814a7d054e1faed5e30a8b6a87d5d5e9c088ea662fac8', data={"name" : "Ana" , "dob" : "21","bloodType": "B+", "allergies" : "none", "doctorkey" : ""})	
-archive.add_record(chain)
-archive.add_record(chain2)
-
-DB_KEY = "mongodb+srv://medchain:<password>@cluster0.tji1t.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
+DB_KEY = "mongodb+srv://medchain:medchain123@cluster0.yz7pqrw.mongodb.net/?retryWrites=true&w=majority"
 client = pymongo.MongoClient(DB_KEY)
 db = client.user
 
+"""
+Create an archive
+"""
+@app.route('/archive/create', methods=['POST'])
+def createArchive():
+    _id = request.json.get('id')
+    _data = request.json.get('data')
+    archive.add_record(Chain(id=int(_id), data=_data))
+    return jsonify(_data), 200
+
+"""
+Get an entire archive's last block
+"""
+@app.route('/archive/get/<id>', methods=['GET'])
+def getArchive(id):
+    rec = archive.fetch_record(int(id))
+    return jsonify(rec.last_block), 200
+
+"""
+A route for creating a signature
+"""
+@app.route('/signature/create', methods=['GET'])
+def createAccount():
+    node = Node()
+    (a, k) = node.generate_transaction_addr()
+    return jsonify({'address': a, 'pubkey': k.decode('utf-8'), 'seed': node._wallet_seed}), 200
 
 """
 A route for verifying that an address/pubkey is authorized to use the platform
@@ -54,7 +74,6 @@ def record():
     block = record.new_block(record.hash(record.last_block), data=data)
 
     return jsonify(block), 200
-
 
 """
 Retrieves the record of a specific patient given their id
