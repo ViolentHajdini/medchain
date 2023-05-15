@@ -20,6 +20,9 @@ DB_KEY = os.getenv('MONGO_DB_KEY')
 client = pymongo.MongoClient(DB_KEY)
 db = client.medchain
 
+def getFullHostName():
+    return HOST_NAME + ':' + str(PORT)
+
 """
 Get an entire archive's last block
 """
@@ -127,6 +130,7 @@ def book_chain(id):
     print("ID returned", archive.print_records())
     return jsonify(archive.fetch_record(id).chain), 200
 
+
 #
 # P2P Endpoints
 #
@@ -137,17 +141,46 @@ Add a node as a neighbor and send
 @app.route('/node/register', methods=['POST'])
 def registerNode():
     ip = request.json['ip']  # List of IP addresses, ex. 127.0.0.1:5000
-    FULL_HOST_NAME = HOST_NAME + ':' + str(PORT)
     for i in ip:
         # Register the node and sends identity to neighbors
         node.register_node(i)
         try:
-            requests.post(i + '/node/register', json={'ip': [FULL_HOST_NAME]})
+            requests.post(i + '/node/register', json={'ip': [getFullHostName()]})
         except:
             print('ERROR: Could not send identity to node:', i)
 
     # Return list of this node's neighbors
     return jsonify({'neighbors': list(node.get_neighbors())}), 200
+
+
+"""
+Route to send a new block to the other neighbors
+"""
+@app.route('/block/receive', methods=['POST'])
+def receiveBlock():
+    id       = request.json['id']
+    block    = request.json['block']
+    chain    = archive.fetch_record(id)
+    new_hash = chain.hash(chain.last_block)
+    chain.new_block(new_hash, block)
+
+
+"""
+Route for a node to receive new blocks
+"""
+@app.route('/block/send', methods=['POST'])
+def sendBlock():
+    neighbors = list(node.get_neighbors())
+    _json = {
+        'id': request.json['id'],
+        'block': request.json['block']
+    }
+    for i in neighbors:
+        try:
+            requests.post(i + '/block/receive', json=_json)
+        except:
+            print('ERROR: Failed to send a block to node:', i)
+
 
 if __name__ == '__main__':
     from argparse import ArgumentParser
