@@ -2,7 +2,10 @@ from flask import Flask, jsonify, request
 from archive import Archive
 from blockchain import Chain, Node
 from client import Client
+from dotenv import load_dotenv
 import requests, pymongo, json, os
+
+load_dotenv()
 
 # Instantiate the Node
 app      = Flask(__name__)
@@ -12,7 +15,7 @@ node     = Node()
 
 DB_KEY = os.getenv('MONGO_DB_KEY')
 client = pymongo.MongoClient(DB_KEY)
-db = client.user
+db = client.medchain
 
 """
 Create an archive
@@ -92,4 +95,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
     port = args.port
 
-    app.run(host='0.0.0.0', port=port, debug=True)
+    app.run(host='127.0.0.1', port=port, debug=True)
