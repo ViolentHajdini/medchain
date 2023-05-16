@@ -14,8 +14,6 @@ const Patient = props => {
     });
     
 
-
-    
     const handleEffect = () =>{
         fetch('/record/chain/' + props.id ,{
             method: 'GET',

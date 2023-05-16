@@ -27,6 +27,7 @@ def getArchive(id):
     rec = archive.fetch_record(int(id))
     return jsonify(rec.last_block), 200
 
+
 """
 A route for creating a signature
 """
@@ -52,15 +53,13 @@ def createArchive():
     obj = {
         'id' : token.id,
         'name': token.chain[0]['name'],
-        'dob' : token.chain[0]['dob'],
-        'bloodType' : token.chain[0]['bloodType'],
-        'allergies' : token.chain[0]['allergies'],
+        # 'dob' : token.chain[0]['dob'],
+        # 'bloodType' : token.chain[0]['bloodType'],
+        # 'allergies' : token.chain[0]['allergies'],
     }
     db.patient.insert_one(obj)
 
     return jsonify(a, _data), 200
-
-
 
 
 """

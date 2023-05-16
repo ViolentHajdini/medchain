@@ -15,6 +15,7 @@ from datetime import datetime
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.kdf.hkdf import HKDF
 from cryptography.hazmat.primitives.asymmetric import ec
+import requests
 
 class Chain:
     def __init__(self, id=None, data=None, exported=None):
@@ -98,6 +99,44 @@ class Chain:
         """
         block_string = json.dumps(block, sort_keys=True).encode()
         return hashlib.sha256(block_string).hexdigest()
+
+
+    def resolve_conflicts(self, book):
+        """
+        Consensus algorithm
+        """
+        token = str(book.replace(' ','_'))
+        neighbours = self.nodes
+        new_chain = None
+        # We're only looking for chains longer than ours
+        max_length = len(self.chain)
+        print(token)
+        # Grab and verify the chains from all the nodes in our network
+        for node in neighbours:
+            response = requests.get(f'http://localhost:{node}/{token}/chain')
+
+            if response.status_code == 200:
+                length = response.json()['length']
+                chain = response.json()['chain']
+                signature = bytes.fromhex(response.json()['signature'])
+                public_key = serialization.load_der_public_key(bytes.fromhex(response.json()['public_key']))
+
+                try:
+                    hash_check = bytes.fromhex(self.chain_hash(chain))
+                    public_key.verify(signature, hash_check, ec.ECDSA(hashes.SHA256()))
+                except:
+                    return False
+
+                # Check if the length is longer and the chain is valid
+                # if valid it replaces and checks for length
+                if length > max_length and self.valid_chain(chain):
+                    max_length = length
+                    new_chain = chain
+        if new_chain:
+            self.chain = new_chain
+            return True
+        return False
+
 
     def valid_chain(self, chain):
         """
