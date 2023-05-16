@@ -62,7 +62,7 @@ def createArchive():
         'bloodType' : token.chain[0]['bloodType'],
         'allergies' : token.chain[0]['allergies'],
     }
-    db.patient.insert_one(obj)
+    #db.patient.insert_one(obj)
 
     return jsonify(obj), 200
 
@@ -162,7 +162,8 @@ def receiveBlock():
     block    = request.json['block']
     chain    = archive.fetch_record(id)
     new_hash = chain.hash(chain.last_block)
-    chain.new_block(new_hash, block)
+    new_block = chain.new_block(new_hash, block)
+    return jsonify(new_block), 200
 
 
 """
@@ -175,11 +176,17 @@ def sendBlock():
         'id': request.json['id'],
         'block': request.json['block']
     }
+    success = []
     for i in neighbors:
         try:
-            requests.post(i + '/block/receive', json=_json)
+            res = requests.post(i + '/block/receive', json=_json)
+            success.append(res.data)
         except:
             print('ERROR: Failed to send a block to node:', i)
+            success.append({"message": "ERROR!"})
+
+    return jsonify(success), 200
+
 
 
 if __name__ == '__main__':

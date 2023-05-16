@@ -1,5 +1,6 @@
 .vscode
 .env
+.DS_Store
 Pipfile.lock
 debug.log
 package-lock.json
