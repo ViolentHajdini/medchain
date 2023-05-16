@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, g, current_app
 from archive import Archive
 from blockchain import Chain, Node
 from client import Client
@@ -12,8 +12,7 @@ PORT      = 4242
 
 # Instantiate the Node
 app      = Flask(__name__)
-archive  = Archive()
-node     = Node()
+
 # protocol = Client()
 
 DB_KEY = os.getenv('MONGO_DB_KEY')
@@ -32,8 +31,8 @@ Get an entire archive's last block
 """
 @app.route('/archive/get/<id>', methods=['GET'])
 def getArchive(id):
-    print(archive._archive[0].id)
-    rec = archive.fetch_record(id)
+    print(current_app.config['archive']._archive[0].id)
+    rec = current_app.config['archive'].fetch_record(id)
     return jsonify(rec.last_block), 200
 
 """
@@ -41,9 +40,8 @@ A route for creating a signature
 """
 @app.route('/signature/create', methods=['GET'])
 def createAccount():
-    node = Node()
-    (a, k) = node.generate_transaction_addr()
-    return jsonify({'address': a, 'pubkey': k.decode('utf-8'), 'seed': node._wallet_seed}), 200
+    (a, k) = current_app.config['node'].generate_transaction_addr()
+    return jsonify({'address': a, 'pubkey': k.decode('utf-8'), 'seed': current_app.config['node']._wallet_seed}), 200
 
 
 """
@@ -52,12 +50,11 @@ Create an archive
 @app.route('/archive/create/patient', methods=['POST'])
 def createArchive():
     _data = request.json.get('data')
-    node = Node()
     #a = address, k = pubkey
-    (a, k) = node.generate_transaction_addr()
+    (a, k) = current_app.config['node'].generate_transaction_addr()
 
     token = Chain(id=a, data=_data)
-    archive.add_record(token)
+    current_app.config['archive'].add_record(token)
     obj = {
         'id' : token.id,
         'name': token.chain[0]['name'],
@@ -66,8 +63,34 @@ def createArchive():
         'allergies' : token.chain[0]['allergies'],
     }
     db.patient.insert_one(obj)
+    del obj['_id']
+    if len(current_app.config['node'].get_neighbors()) > 0:    
+        for node in list(current_app.config['node'].get_neighbors()):
+            try: 
+                response = requests.post(f'http://{node}/archive/recieve/patient', json=obj)
+                print(response)
+                response.raise_for_status()
+            except Exception as e:
+                print("Error: ", e)
+                return jsonify({}), 500
 
-    return jsonify(obj), 200
+    return jsonify(a, _data), 200
+
+
+"""
+Route to create a profile for patient recognized by other nodes in the network
+"""
+@app.route('/archive/recieve/patient', methods=['POST'])
+def receivePatientProfile():
+    _data = request.get_json()
+    _id = _data['id']
+    del _data['id']
+    patient = Chain(id=_id, data= _data)
+    print(patient)
+    current_app.config['archive'].add_record(patient)
+    return jsonify({}), 201
+
+
 
 
 """
@@ -76,9 +99,8 @@ Create a profile for doctor
 @app.route('/archive/create/doctor', methods=['POST'])
 def createDoctorProfile():
     _data = request.json.get('data')
-    node = Node()
     #a = address, k = pubkey
-    (a, k) = node.generate_transaction_addr()
+    (a, k) = current_app.config['node'].generate_transaction_addr()
 
     obj = {
         'id' : a,
@@ -116,7 +138,7 @@ A route for creating a new patient record on the platform
 def record():
     id = request.json['id']
     data = request.json['data']
-    record = archive.fetch_record(id)
+    record = current_app.config['archive'].fetch_record(id)
 
     #setting the block with data
     block = record.new_block(record.hash(record.last_block), data=data)
@@ -129,9 +151,11 @@ Retrieves the record of a specific patient given their id
 """
 @app.route('/record/chain/<id>', methods=['GET'])
 def book_chain(id):
+    if not id:
+        return jsonify({}), 400
     print("ID being passed: ", id)
-    print("ID returned", archive.print_records())
-    return jsonify(archive.fetch_record(id).chain), 200
+    print("ID returned", current_app.config['archive'].print_records())
+    return jsonify(current_app.config['archive'].fetch_record(id).chain), 200
 
 
 #
@@ -146,14 +170,18 @@ def registerNode():
     ip = request.json['ip']  # List of IP addresses, ex. 127.0.0.1:5000
     for i in ip:
         # Register the node and sends identity to neighbors
-        node.register_node(i)
-        try:
-            requests.post(i + '/node/register', json={'ip': [getFullHostName()]})
-        except:
-            print('ERROR: Could not send identity to node:', i)
-
+        if i not in current_app.config['node'].get_neighbors():
+            current_app.config['node'].register_node(i)
+            try:
+                requests.post('http://'+ i + '/node/register', json={'ip': [getFullHostName()]})
+            except Exception as e:
+                print('ERROR: Could not send identity to node:', i, " E: ", e)
     # Return list of this node's neighbors
-    return jsonify({'neighbors': list(node.get_neighbors())}), 200
+    return jsonify({'neighbors': list(current_app.config['node'].get_neighbors())}), 200
+
+
+
+
 
     # TODO: send over the blockchain
 
@@ -164,7 +192,7 @@ Route to send a new block to the other neighbors
 def receiveBlock():
     id       = request.json['id']
     block    = request.json['block']
-    chain    = archive.fetch_record(id)
+    chain    = current_app.config['archive'].fetch_record(id)
     new_hash = chain.hash(chain.last_block)
     new_block = chain.new_block(new_hash, block)
     return jsonify(new_block), 200
@@ -175,7 +203,7 @@ Route for a node to receive new blocks
 """
 @app.route('/block/send', methods=['POST'])
 def sendBlock():
-    neighbors = list(node.get_neighbors())
+    neighbors = list(current_app.config['node'].get_neighbors())
     _json = {
         'id': request.json['id'],
         'block': request.json['block']
@@ -183,12 +211,12 @@ def sendBlock():
     success = []
     for i in neighbors:
         try:
-            print(i + '/block/send')
             res = requests.post('http://' + i + '/block/receive', json=_json)
-            success.append(res.data)
-        except:
-            success.append({"error": "Failed to send a block to node: " + i})
-
+            res.raise_for_status()
+        except Exception as e:
+            print(e)
+            return jsonify({"error": "Failed to send a block to node: " + i}), 500
+        success.append(res.json())
     return jsonify(success), 200
 
 
@@ -201,5 +229,9 @@ if __name__ == '__main__':
                         type=int, help='port to listen on')
     args = parser.parse_args()
     PORT = args.port
-
+    with app.app_context():
+        current_app.config['archive'] = Archive()
+        #node = Node()
+        #archive  = Archive()
+        current_app.config['node'] = Node()
     app.run(host=HOST_NAME, port=PORT, debug=True)

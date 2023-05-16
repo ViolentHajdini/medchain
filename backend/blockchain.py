@@ -203,7 +203,7 @@ class Node:
             self.neighbors.add(parsed_url.netloc)
         elif parsed_url.path:
             # Accepts an URL without scheme like '192.168.0.5:5000'.
-            self.neighbors.add(parsed_url.path)
+            self.neighbors.add("127.0.0.1:" + parsed_url.path)
         else:
             raise ValueError('Invalid URL')
 
