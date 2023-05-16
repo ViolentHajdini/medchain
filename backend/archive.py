@@ -13,9 +13,9 @@ class Archive:
 
     def add_record(self, new_record):
         """
-        Adds a new book to the library
+        Adds a new block to the library
 
-            new_book: Chain -> Chain object (representing a patient)
+            new_block: Chain -> Chain object (representing a patient)
             return: bool -> True for success, False otherwise 
         """
 
@@ -45,16 +45,16 @@ class Archive:
         }
         """
 
-        for book in self._archive:
-            if book.id == data['patient']:
+        for block in self._archive:
+            if block.id == data['patient']:
                 data = {
                     'doctor': data['doctor'],
                     'pubkey': data['pubkey'],
                     'docsig': data['docsig']
                 }
 
-                previous_hash = book.hash(book.last_block)
-                book.new_block(previous_hash, data=data)
+                previous_hash = block.hash(block.last_block)
+                block.new_block(previous_hash, data=data)
                 return True
         
         return False

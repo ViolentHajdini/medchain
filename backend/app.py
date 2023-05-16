@@ -62,9 +62,9 @@ def createArchive():
     obj = {
         'id' : token.id,
         'name': token.chain[0]['name'],
-        'dob' : token.chain[0]['dob'],
-        'bloodType' : token.chain[0]['bloodType'],
-        'allergies' : token.chain[0]['allergies'],
+        # 'dob' : token.chain[0]['dob'],
+        # 'bloodType' : token.chain[0]['bloodType'],
+        # 'allergies' : token.chain[0]['allergies'],
     }
     #db.patient.insert_one(obj)
 
