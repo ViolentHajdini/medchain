@@ -16,18 +16,10 @@ class Archive:
 
     def add_record(self, new_record):
         """
-        Adds a new book to the library
+        Adds a new record to the library
 
-<<<<<<< HEAD
-<<<<<<< HEAD
             new_block: Chain -> Chain object (representing a patient)
             return: bool -> True for success, False otherwise
-=======
-=======
->>>>>>> parent of 30770b5 (small changes)
-            new_book: Chain -> Chain object (representing a patient)
-            return: bool -> True for success, False otherwise 
->>>>>>> parent of 30770b5 (small changes)
         """
 
         for record in self._archive:
