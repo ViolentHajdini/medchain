@@ -1,0 +1,257 @@
+{
+	"info": {
+		"_postman_id": "2470b44e-9e54-45b8-896f-dbf53634b614",
+		"name": "medchain",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "11569974"
+	},
+	"item": [
+		{
+			"name": "/signature/create",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"address matches SHA256 hashed pubkey\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.address).to.eql(CryptoJS.SHA256(jsonData.pubkey).toString());",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:{{PORT}}/signature/create",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"signature",
+						"create"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/archive/create/patient",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Create patient chain\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.environment.set(\"chain_id\", jsonData.id);",
+							"});",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"data\": {\n        \"name\": \"Ima Kunt\",\n        \"dob\": \"07/01/1998\",\n        \"bloodType\": \"money\",\n        \"allergies\": \"broke niggas\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:{{PORT}}/archive/create/patient",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"archive",
+						"create",
+						"patient"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/archive/get/<id>",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful GET request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200]);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:{{PORT}}/record/chain/{{chain_id}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"record",
+						"chain",
+						"{{chain_id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/node/register",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Node can register a neighbor\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    pm.expect(jsonData.neighbors).to.eql([\"127.0.0.1:9002\", \"127.0.0.1:9001\"]);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"ip\": [\"127.0.0.1:9001\", \"127.0.0.1:9002\"]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:{{PORT}}/node/register",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"node",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/block/receive",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200]);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"{{chain_id}}\",\n    \"block\": {\n        \"allergies\": \"broke niggas\",\n        \"bloodType\": \"money\",\n        \"dob\": \"07/01/1998\",\n        \"name\": \"Ima Kunt\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:{{PORT}}/block/receive",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"block",
+						"receive"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "/block/send",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {",
+							"    pm.expect(pm.response.code).to.be.oneOf([200]);",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"{{chain_id}}\",\n    \"block\": {\n        \"allergies\": \"broke niggas\",\n        \"bloodType\": \"money\",\n        \"dob\": \"07/01/1998\",\n        \"name\": \"Ima Kunt\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:{{PORT}}/block/send",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"block",
+						"send"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
