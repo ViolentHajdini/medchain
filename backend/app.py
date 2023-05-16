@@ -156,6 +156,7 @@ def registerNode():
     # Return list of this node's neighbors
     return jsonify({'neighbors': list(node.get_neighbors())}), 200
 
+    # TODO: send over the blockchain
 
 """
 Route to send a new block to the other neighbors
@@ -183,7 +184,8 @@ def sendBlock():
     success = []
     for i in neighbors:
         try:
-            res = requests.post(i + '/block/receive', json=_json)
+            print(i + '/block/send')
+            res = requests.post('http://' + i + '/block/receive', json=_json)
             success.append(res.data)
         except:
             success.append({"error": "Failed to send a block to node: " + i})
