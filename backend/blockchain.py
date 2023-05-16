@@ -15,6 +15,7 @@ from datetime import datetime
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.kdf.hkdf import HKDF
 from cryptography.hazmat.primitives.asymmetric import ec
+import requests
 
 class Chain:
     def __init__(self, id=None, data=None, exported=None):
@@ -99,6 +100,44 @@ class Chain:
         block_string = json.dumps(block, sort_keys=True).encode()
         return hashlib.sha256(block_string).hexdigest()
 
+
+    def resolve_conflicts(self, book):
+        """
+        Consensus algorithm
+        """
+        token = str(book.replace(' ','_'))
+        neighbours = self.nodes
+        new_chain = None
+        # We're only looking for chains longer than ours
+        max_length = len(self.chain)
+        print(token)
+        # Grab and verify the chains from all the nodes in our network
+        for node in neighbours:
+            response = requests.get(f'http://localhost:{node}/{token}/chain')
+
+            if response.status_code == 200:
+                length = response.json()['length']
+                chain = response.json()['chain']
+                signature = bytes.fromhex(response.json()['signature'])
+                public_key = serialization.load_der_public_key(bytes.fromhex(response.json()['public_key']))
+
+                try:
+                    hash_check = bytes.fromhex(self.chain_hash(chain))
+                    public_key.verify(signature, hash_check, ec.ECDSA(hashes.SHA256()))
+                except:
+                    return False
+
+                # Check if the length is longer and the chain is valid
+                # if valid it replaces and checks for length
+                if length > max_length and self.valid_chain(chain):
+                    max_length = length
+                    new_chain = chain
+        if new_chain:
+            self.chain = new_chain
+            return True
+        return False
+
+
     def valid_chain(self, chain):
         """
         Determines if a chain is valid
@@ -153,7 +192,6 @@ class Node:
         self._wallet_seed = int.from_bytes(urandom(16), byteorder='big')
         self._private_key = ec.derive_private_key(self._wallet_seed, ec.SECP384R1())
 
-
     def register_node(self, address):
         """
         Register another node on the network to be aware of
@@ -169,14 +207,13 @@ class Node:
         else:
             raise ValueError('Invalid URL')
 
-
     def get_neighbors(self):
         """
         Return the array of neighbors in the network
 
         return: [] -> array of IP addresses
         """
-        return list(self.neighbors)
+        return self.neighbors
 
     def generate_signature(self, data):
         """
@@ -191,26 +228,27 @@ class Node:
             hash,
             ec.ECDSA(hashes.SHA256())
         )
+
         return signature.hex()
 
-    """
-    Generate this node's transaction address and corresponding public key
-
-        return: Tuple -> (address: hex, pubkey: hex)
-    """
     def generate_transaction_addr(self):
+        """
+        Generate this node's transaction address and corresponding public key
+
+            return: Tuple -> (address: hex, pubkey: hex)
+        """
         public_key = self._private_key.public_key()
         serialized_public_key = public_key.public_bytes(
             encoding=serialization.Encoding.DER,
             format=serialization.PublicFormat.SubjectPublicKeyInfo
         )
+
         # Transaction addresses are made of hashing the public key once
         encoded_key = serialized_public_key.hex().encode('utf-8')
         address = hashlib.sha256(encoded_key).hexdigest()
 
         # Return tuple of tx address and public key to verify
         return (address, encoded_key)
-
 
     def verify_addr(self, addr, pubkey):
         """
@@ -231,7 +269,6 @@ class Node:
         else:
             return False
 
-
     def verify_block(self, block):
         """
         Verify that a block is valid and eligble to be put into the chain
@@ -246,6 +283,3 @@ class Node:
             return True
         except:
             return False
-
-    def get_public_key(self):
-        return self._private_key.public_key()
