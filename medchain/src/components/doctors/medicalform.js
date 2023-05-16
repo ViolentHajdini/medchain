@@ -17,6 +17,7 @@ const MedicalForm = props => {
     const [bool, setBool] = useState(true);
     const [temp,setTemp] = useState('');
     
+    console.log('HERE!',props.id);
     useEffect(()=>{
         if(props.check && bool){ 
             setTemp(props.id);
