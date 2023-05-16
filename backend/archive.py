@@ -11,12 +11,15 @@ class Archive:
     def __init__(self):
         self._archive = []
 
+    def get_archive(self):
+        return self._archive
+
     def add_record(self, new_record):
         """
         Adds a new block to the library
 
             new_block: Chain -> Chain object (representing a patient)
-            return: bool -> True for success, False otherwise 
+            return: bool -> True for success, False otherwise
         """
 
         for record in self._archive:
@@ -56,7 +59,7 @@ class Archive:
                 previous_hash = block.hash(block.last_block)
                 block.new_block(previous_hash, data=data)
                 return True
-        
+
         return False
 
     def fetch_record(self, req):

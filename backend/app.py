@@ -10,15 +10,18 @@ load_dotenv()
 HOST_NAME = '127.0.0.1'
 PORT      = 4242
 
+
 # Instantiate the Node
 app      = Flask(__name__)
 archive  = Archive()
 node     = Node()
 # protocol = Client()
 
+
 DB_KEY = os.getenv('MONGO_DB_KEY')
 client = pymongo.MongoClient(DB_KEY)
 db = client.medchain
+
 
 """
 Return this node's full host name and port
@@ -26,6 +29,7 @@ ex: 127.0.0.1:9001
 """
 def getFullHostName():
     return HOST_NAME + ':' + str(PORT)
+
 
 """
 Get an entire archive's last block
@@ -71,6 +75,7 @@ def createArchive():
     return jsonify(obj), 200
 
 
+
 """
 Create a profile for doctor
 """
@@ -87,6 +92,7 @@ def createDoctorProfile():
     }
     db.doc.insert_one(obj)
     return jsonify(a, _data), 200
+
 
 
 """
@@ -110,6 +116,7 @@ def deal_with_input(opt, key):
     }), 200
 
 
+
 """
 A route for creating a new patient record on the platform
 """
@@ -123,6 +130,7 @@ def record():
     block = record.new_block(record.hash(record.last_block), data=data)
 
     return jsonify(block), 200
+
 
 
 """
@@ -147,51 +155,76 @@ def registerNode():
     ip = request.json['ip']  # List of IP addresses, ex. 127.0.0.1:5000
     for i in ip:
         # Register the node and sends identity to neighbors
-        node.register_node(i)
-        try:
-            requests.post(i + '/node/register', json={'ip': [getFullHostName()]})
-        except:
-            print('ERROR: Could not send identity to node:', i)
+        if i not in node.get_neighbors():
+            node.register_node(i)
+            try:
+                requests.post('http://' + i + '/node/register', json={'ip': [getFullHostName()]})
+            except:
+                print('ERROR: Could not send identity to node:', i)
 
     # Return list of this node's neighbors
     return jsonify({'neighbors': list(node.get_neighbors())}), 200
 
     # TODO: send over the blockchain
 
-"""
-Route to send a new block to the other neighbors
-"""
-@app.route('/block/receive', methods=['POST'])
-def receiveBlock():
-    id       = request.json['id']
-    block    = request.json['block']
-    chain    = archive.fetch_record(id)
-    new_hash = chain.hash(chain.last_block)
-    new_block = chain.new_block(new_hash, block)
-    return jsonify(new_block), 200
-
 
 """
 Route for a node to receive new blocks
 """
+@app.route('/block/receive', methods=['POST'])
+def receiveBlock():
+    id       = request.json['id']
+    chain    = archive.fetch_record(id)
+    try:
+        chain.resolve_conflicts(id, node.neighbors)
+    except:
+        endpoint = 'http://' + node.get_neighbors()[0] + '/get/chain/' + id
+        res = requests.get(endpoint)
+        archive.add_record(Chain(id=id, exported=res.json()['chain']))
+
+    return jsonify("SUCCESS"), 200
+
+
+"""
+Route to send a new block to the other neighbors
+
+Expects a request of
+{
+    'id': chain id,
+    'block': block data
+}
+"""
 @app.route('/block/send', methods=['POST'])
 def sendBlock():
-    neighbors = list(node.get_neighbors())
-    _json = {
-        'id': request.json['id'],
-        'block': request.json['block']
-    }
     success = []
+    neighbors = node.get_neighbors()
     for i in neighbors:
         try:
             print(i + '/block/send')
-            res = requests.post('http://' + i + '/block/receive', json=_json)
-            success.append(res.data)
+            res = requests.post('http://' + i + '/block/receive', json=request.json)
+            success.append(res.json())
         except:
-            success.append({"error": "Failed to send a block to node: " + i})
+           success.append({"error": "Failed to send a block to node: " + i})
 
     return jsonify(success), 200
 
+
+"""
+Route for sending blockchain to node connecting to the network
+"""
+@app.route('/get/chain/<token>', methods=['GET'])
+def getChain(token):
+    r = archive.fetch_record(token)
+    try:
+        chain = r.chain
+    except:
+        chain = []
+    (a, k) = node.generate_transaction_addr()
+    return jsonify({
+        "chain": chain,
+        "signature": node.generate_signature('123456'),
+        "public_key": k.decode('utf-8'),
+    }), 200
 
 
 if __name__ == '__main__':
