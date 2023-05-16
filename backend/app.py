@@ -20,6 +20,10 @@ DB_KEY = os.getenv('MONGO_DB_KEY')
 client = pymongo.MongoClient(DB_KEY)
 db = client.medchain
 
+"""
+Return this node's full host name and port
+ex: 127.0.0.1:9001
+"""
 def getFullHostName():
     return HOST_NAME + ':' + str(PORT)
 
@@ -182,8 +186,7 @@ def sendBlock():
             res = requests.post(i + '/block/receive', json=_json)
             success.append(res.data)
         except:
-            print('ERROR: Failed to send a block to node:', i)
-            success.append({"message": "ERROR!"})
+            success.append({"error": "Failed to send a block to node: " + i})
 
     return jsonify(success), 200
 
