@@ -15,7 +15,6 @@ from datetime import datetime
 from cryptography.hazmat.primitives import hashes, serialization
 from cryptography.hazmat.primitives.kdf.hkdf import HKDF
 from cryptography.hazmat.primitives.asymmetric import ec
-import requests
 
 class Chain:
     def __init__(self, id=None, data=None, exported=None):
@@ -99,60 +98,6 @@ class Chain:
         """
         block_string = json.dumps(block, sort_keys=True).encode()
         return hashlib.sha256(block_string).hexdigest()
-
-
-    def resolve_conflicts(self, chain_id, neighbors):
-        """
-        Consensus algorithm
-        """
-        new_chain = None
-        # We're only looking for chains longer than ours
-        max_length = len(self.chain)
-        # Grab and verify the chains from all the nodes in our network
-        for node in neighbors:
-            response = requests.get(f'http://{node}/get/chain/{chain_id}')
-
-            if response.status_code == 200:
-                chain = response.json()['chain']
-                signature = bytes.fromhex(response.json()['signature'])
-                public_key = serialization.load_der_public_key(bytes.fromhex(response.json()['public_key']))
-
-                try:
-                    hash_check = bytes.fromhex(self.chain_hash(chain))
-                    public_key.verify(signature, hash_check, ec.ECDSA(hashes.SHA256()))
-                except:
-                    return False
-
-                # Check if the length is longer and the chain is valid
-                # if valid it replaces and checks for length
-                if len(chain) > max_length and self.valid_chain(chain):
-                    max_length = len(chain)
-                    new_chain = chain
-        if new_chain:
-            self.chain = new_chain
-            return True
-        return False
-
-
-    """
-    Simple Proof of Work Algorithm:
-        - Find a number p' such that hash(pp') contains leading 4 zeroes
-        - Where p is the previous proof, and p' is the new proof
-
-    :param last_block: <dict> last Block
-    :return: <int>
-    """
-
-    def proof_of_work(self, last_block):
-        last_proof = last_block['proof']
-        last_hash = self.hash(last_block)
-
-        proof = 0
-        while self.valid_proof(last_proof, proof, last_hash) is False:
-            proof += 1
-
-        return proof
-
 
     def valid_chain(self, chain):
         """
