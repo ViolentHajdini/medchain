@@ -55,19 +55,22 @@ def createArchive():
 
     token = Chain(id=a, data=_data)
     current_app.config['archive'].add_record(token)
-    obj = {
+    block_payload = {
         'id' : token.id,
         'name': token.chain[0]['name'],
         'dob' : token.chain[0]['dob'],
         'bloodType' : token.chain[0]['bloodType'],
         'allergies' : token.chain[0]['allergies'],
     }
-    db.patient.insert_one(obj)
-    del obj['_id']
+    mongo_obj = {
+        'id' : token.id,
+        'name': token.chain[0]['name']
+    }
+    db.patient.insert_one(mongo_obj)
     if len(current_app.config['node'].get_neighbors()) > 0:    
         for node in list(current_app.config['node'].get_neighbors()):
             try: 
-                response = requests.post(f'http://{node}/archive/recieve/patient', json=obj)
+                response = requests.post(f'http://{node}/archive/recieve/patient', json=block_payload)
                 print(response)
                 response.raise_for_status()
             except Exception as e:
@@ -142,7 +145,21 @@ def record():
 
     #setting the block with data
     block = record.new_block(record.hash(record.last_block), data=data)
-
+    _json = { 
+        'id': id,
+        'data' : data,
+    }
+    neighbors = list(current_app.config['node'].get_neighbors())
+    if len(neighbors) > 0:
+        success = []
+        for i in neighbors:
+            try:
+                res = requests.post('http://' + i + '/block/receive', json=_json)
+                res.raise_for_status()
+            except Exception as e:
+                print(e)
+                return jsonify({"error": "Failed to send a block to node: " + i}), 500
+            success.append(res.json())
     return jsonify(block), 200
 
 
@@ -191,33 +208,33 @@ Route to send a new block to the other neighbors
 @app.route('/block/receive', methods=['POST'])
 def receiveBlock():
     id       = request.json['id']
-    block    = request.json['block']
+    block    = request.json['data']
     chain    = current_app.config['archive'].fetch_record(id)
     new_hash = chain.hash(chain.last_block)
     new_block = chain.new_block(new_hash, block)
     return jsonify(new_block), 200
 
 
-"""
-Route for a node to receive new blocks
-"""
-@app.route('/block/send', methods=['POST'])
-def sendBlock():
-    neighbors = list(current_app.config['node'].get_neighbors())
-    _json = {
-        'id': request.json['id'],
-        'block': request.json['block']
-    }
-    success = []
-    for i in neighbors:
-        try:
-            res = requests.post('http://' + i + '/block/receive', json=_json)
-            res.raise_for_status()
-        except Exception as e:
-            print(e)
-            return jsonify({"error": "Failed to send a block to node: " + i}), 500
-        success.append(res.json())
-    return jsonify(success), 200
+# """
+# Route for a node to receive new blocks
+# """
+# @app.route('/block/send', methods=['POST'])
+# def sendBlock():
+#     neighbors = list(current_app.config['node'].get_neighbors())
+#     _json = {
+#         'id': request.json['id'],
+#         'block': request.json['block']
+#     }
+#     success = []
+#     for i in neighbors:
+#         try:
+#             res = requests.post('http://' + i + '/block/receive', json=_json)
+#             res.raise_for_status()
+#         except Exception as e:
+#             print(e)
+#             return jsonify({"error": "Failed to send a block to node: " + i}), 500
+#         success.append(res.json())
+#     return jsonify(success), 200
 
 
 
