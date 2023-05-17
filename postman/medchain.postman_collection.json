@@ -112,7 +112,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"data\": {\n        \"name\": \"Ima Kunt\",\n        \"dob\": \"07/01/1998\",\n        \"bloodType\": \"money\",\n        \"allergies\": \"broke niggas\"\n    }\n}",
+					"raw": "{\n    \"data\": {\n        \"name\": \"Ima Kunt\",\n        \"dob\": \"07/01/1998\",\n        \"bloodType\": \"money\",\n        \"allergies\": \"broke ninjas\"\n    }\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -155,7 +155,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"id\": \"{{chain_id}}\",\n    \"data\": {\n        \"allergies\": \"broke niggas\",\n        \"bloodType\": \"money\",\n        \"dob\": \"07/01/1998\",\n        \"name\": \"Ima Kunt\"\n    }\n}",
+					"raw": "{\n    \"id\": \"{{chain_id}}\",\n    \"data\": {\n        \"allergies\": \"a silly ninja\",\n        \"bloodType\": \"money++\",\n        \"dob\": \"07/01/1998\",\n        \"name\": \"Ima G. Kunt\"\n    }\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -272,7 +272,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"id\": \"{{chain_id}}\",\n    \"data\": {\n        \"allergies\": \"broke niggas\",\n        \"bloodType\": \"money\",\n        \"dob\": \"07/01/1998\",\n        \"name\": \"Ima Kunt\"\n    }\n}",
+					"raw": "{\n    \"id\": \"{{chain_id}}\",\n    \"data\": {\n        \"allergies\": \"broke ninja\",\n        \"bloodType\": \"money\",\n        \"dob\": \"07/01/1998\",\n        \"name\": \"Ima Kunt\"\n    }\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -301,7 +301,7 @@
 					"listen": "test",
 					"script": {
 						"exec": [
-							"pm.test(\"Successful POST request\", function () {",
+							"pm.test(\"Successful GET request\", function () {",
 							"    pm.expect(pm.response.code).to.be.oneOf([200]);",
 							"});"
 						],
@@ -317,7 +317,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"id\": \"{{chain_id}}\",\n    \"data\": {\n        \"allergies\": \"broke niggas\",\n        \"bloodType\": \"money\",\n        \"dob\": \"07/01/1998\",\n        \"name\": \"Ima Kunt\"\n    }\n}",
+					"raw": "",
 					"options": {
 						"raw": {
 							"language": "json"

@@ -64,13 +64,12 @@ def createArchive():
         'name': token.chain[0]['name']
     }
     db.patient.insert_one(mongo_obj)
-    if len(current_app.config['node'].get_neighbors()) > 0:
-        for node in list(current_app.config['node'].get_neighbors()):
-            try:
-                response = requests.post(f'http://{node}/archive/receive/patient', json=block_payload) # Genesis block
-                response.raise_for_status()
-            except Exception as e:
-                return jsonify({"error": e}), 500
+    for node in list(current_app.config['node'].get_neighbors()):
+        try:
+            response = requests.post(f'http://{node}/archive/receive/patient', json=block_payload) # Genesis block
+            response.raise_for_status()
+        except Exception as e:
+            return jsonify({"error": e}), 500
 
     return jsonify({"address": a, "pubkey": k.decode('utf-8'), "data": _data}), 200
 
@@ -84,9 +83,8 @@ def receivePatientProfile():
     _id = _data['id']
     _block = _data['block']
     patient = Chain(id=_id, exported=_block)
-    print(patient.chain)
     current_app.config['archive'].add_record(patient)
-    return jsonify({}), 201
+    return jsonify(patient.chain), 201
 
 
 
@@ -146,7 +144,6 @@ def record():
     }
     neighbors = list(current_app.config['node'].get_neighbors())
     if len(neighbors) > 0:
-        success = []
         for i in neighbors:
             try:
                 res = requests.post('http://' + i + '/block/receive', json=_json)
@@ -154,7 +151,6 @@ def record():
             except Exception as e:
                 print(e)
                 return jsonify({"error": "Failed to send a block to node: " + i}), 500
-            success.append(res.json())
     return jsonify(block), 200
 
 
@@ -196,13 +192,10 @@ Route to receive new blocks from other neighbors
 @app.route('/block/receive', methods=['POST'])
 def receiveBlock():
     id    = request.json['id']
-    block = request.json['data']
     chain = current_app.config['archive'].fetch_record(id)
 
     if chain.resolve_conflicts(chain, id, current_app.config['node'].get_neighbors()):
-        new_hash = chain.hash(chain.last_block)
-        new_block = chain.new_block(new_hash, block)
-        return jsonify(new_block), 200
+        return jsonify(chain.chain), 200
 
     return jsonify({"error": "Something went wrong with the block reception"}), 500
 
