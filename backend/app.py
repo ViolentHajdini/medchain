@@ -57,20 +57,17 @@ def createArchive():
     current_app.config['archive'].add_record(token)
     block_payload = {
         'id' : token.id,
-        'name': token.chain[0]['name'],
-        'dob' : token.chain[0]['dob'],
-        'bloodType' : token.chain[0]['bloodType'],
-        'allergies' : token.chain[0]['allergies'],
+        'block': token.last_block
     }
     mongo_obj = {
         'id' : token.id,
         'name': token.chain[0]['name']
     }
-    #db.patient.insert_one(mongo_obj)
+    db.patient.insert_one(mongo_obj)
     if len(current_app.config['node'].get_neighbors()) > 0:
         for node in list(current_app.config['node'].get_neighbors()):
             try:
-                response = requests.post(f'http://{node}/archive/receive/patient', json=block_payload)
+                response = requests.post(f'http://{node}/archive/receive/patient', json=block_payload) # Genesis block
                 response.raise_for_status()
             except Exception as e:
                 return jsonify({"error": e}), 500
@@ -85,8 +82,8 @@ Route to create a profile for patient recognized by other nodes in the network
 def receivePatientProfile():
     _data = request.get_json()
     _id = _data['id']
-    del _data['id']
-    patient = Chain(id=_id, data= _data)
+    _block = _data['block']
+    patient = Chain(id=_id, exported=_block)
     print(patient.chain)
     current_app.config['archive'].add_record(patient)
     return jsonify({}), 201
