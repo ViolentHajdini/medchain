@@ -41,7 +41,7 @@ A route for creating a signature
 @app.route('/signature/create', methods=['GET'])
 def createAccount():
     (a, k) = current_app.config['node'].generate_transaction_addr()
-    return jsonify({'address': a, 'pubkey': k.decode('utf-8'), 'seed': current_app.config['node']._wallet_seed}), 200
+    return jsonify({'address': a, 'pubkey': k.decode('utf-8')}), 200
 
 
 """
@@ -66,30 +66,28 @@ def createArchive():
         'id' : token.id,
         'name': token.chain[0]['name']
     }
-    db.patient.insert_one(mongo_obj)
-    if len(current_app.config['node'].get_neighbors()) > 0:    
+    #db.patient.insert_one(mongo_obj)
+    if len(current_app.config['node'].get_neighbors()) > 0:
         for node in list(current_app.config['node'].get_neighbors()):
-            try: 
-                response = requests.post(f'http://{node}/archive/recieve/patient', json=block_payload)
-                print(response)
+            try:
+                response = requests.post(f'http://{node}/archive/receive/patient', json=block_payload)
                 response.raise_for_status()
             except Exception as e:
-                print("Error: ", e)
-                return jsonify({}), 500
+                return jsonify({"error": e}), 500
 
-    return jsonify(a, _data), 200
+    return jsonify({"address": a, "pubkey": k.decode('utf-8'), "data": _data}), 200
 
 
 """
 Route to create a profile for patient recognized by other nodes in the network
 """
-@app.route('/archive/recieve/patient', methods=['POST'])
+@app.route('/archive/receive/patient', methods=['POST'])
 def receivePatientProfile():
     _data = request.get_json()
     _id = _data['id']
     del _data['id']
     patient = Chain(id=_id, data= _data)
-    print(patient)
+    print(patient.chain)
     current_app.config['archive'].add_record(patient)
     return jsonify({}), 201
 
@@ -145,7 +143,7 @@ def record():
 
     #setting the block with data
     block = record.new_block(record.hash(record.last_block), data=data)
-    _json = { 
+    _json = {
         'id': id,
         'data' : data,
     }
@@ -170,8 +168,6 @@ Retrieves the record of a specific patient given their id
 def book_chain(id):
     if not id:
         return jsonify({}), 400
-    print("ID being passed: ", id)
-    print("ID returned", current_app.config['archive'].print_records())
     return jsonify(current_app.config['archive'].fetch_record(id).chain), 200
 
 
@@ -197,22 +193,42 @@ def registerNode():
     return jsonify({'neighbors': list(current_app.config['node'].get_neighbors())}), 200
 
 
-
-
-
-    # TODO: send over the blockchain
-
 """
-Route to send a new block to the other neighbors
+Route to receive new blocks from other neighbors
 """
 @app.route('/block/receive', methods=['POST'])
 def receiveBlock():
-    id       = request.json['id']
-    block    = request.json['data']
-    chain    = current_app.config['archive'].fetch_record(id)
-    new_hash = chain.hash(chain.last_block)
-    new_block = chain.new_block(new_hash, block)
-    return jsonify(new_block), 200
+    id    = request.json['id']
+    block = request.json['data']
+    chain = current_app.config['archive'].fetch_record(id)
+
+    if chain.resolve_conflicts(chain, id, current_app.config['node'].get_neighbors()):
+        new_hash = chain.hash(chain.last_block)
+        new_block = chain.new_block(new_hash, block)
+        return jsonify(new_block), 200
+
+    return jsonify({"error": "Something went wrong with the block reception"}), 500
+
+
+"""
+Route to get a chain's hash
+
+:id -> hexadecimal chain id
+"""
+@app.route('/chain/hash/<id>', methods=['GET'])
+def chainHash(id):
+    r = current_app.config['archive'].fetch_record(id)
+    return jsonify({"hash": r.chain_hash(r.chain)}), 200
+
+"""
+Route for grabbing a specific chain by their id
+"""
+@app.route('/chain/<id>', methods=['GET'])
+def getChain(id):
+    r = current_app.config['archive'].fetch_record(id)
+    a, pk = current_app.config['node'].generate_transaction_addr()
+    sig = current_app.config['node'].generate_signature(r.chain_hash(r.chain))
+    return jsonify({"id": id, "chain": r.chain, "signature": sig, "public_key": pk.decode('utf-8')})
 
 
 # """
